@@ -1,5 +1,4 @@
 
-
 import { LinkItem, ProfileData, ShowItem } from './types';
 
 export const PROFILE: ProfileData = {
@@ -7,8 +6,8 @@ export const PROFILE: ProfileData = {
   tagline: "Ghanaian Rapper & Afrobeat Artist",
   location: "Techiman, Bono East, Ghana",
   image: "https://yt3.googleusercontent.com/ytc/AIdro_n6czAJLhZEsN6IifapwtZiycxoo43PHRE_tR-3FOjtzg=s900-c-k-c0x00ffffff-no-rj",
-  // Converted Google Drive link to direct image rendering link
-  coverImage: "https://lh3.googleusercontent.com/d/1OXqITsHC47GDUADr7u1wzIXPqNCYO7o4",
+  // Using the export=view format which is more reliable for direct embedding
+  coverImage: "https://drive.google.com/uc?export=view&id=1OXqITsHC47GDUADr7u1wzIXPqNCYO7o4",
   flagImage: "https://www.citypng.com/public/uploads/preview/ghana-round-metal-framed-flag-icon-png-733961694955658eoaq03f93z.png",
   stats: [
     { value: "15K+", label: "Streams" },

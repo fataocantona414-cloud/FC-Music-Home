@@ -4,18 +4,21 @@ import { PROFILE } from '../constants';
 
 const Header: React.FC = () => {
   return (
-    <header className="relative max-w-7xl mx-auto mb-8">
+    <header className="relative max-w-6xl mx-auto mb-8">
       {/* Cover Image Section */}
-      <div className="h-48 md:h-80 w-full relative rounded-b-3xl overflow-hidden group border-b border-white/10 shadow-2xl">
+      <div className="h-48 md:h-80 w-full relative rounded-b-3xl overflow-hidden group border-b border-white/10 shadow-2xl bg-darkerBg">
         <div className="absolute inset-0 bg-gradient-to-t from-darkBg via-transparent to-transparent z-10 opacity-90"></div>
         <img 
           src={PROFILE.coverImage} 
           alt="Cover" 
           className="w-full h-full object-cover object-top transition-transform duration-[10s] ease-in-out group-hover:scale-110"
           onError={(e) => {
-             // Fallback to a nice gradient if the image link fails (common with mediafire web links)
+             // Fallback to a nice gradient if the image link fails
              e.currentTarget.style.display = 'none';
-             e.currentTarget.parentElement?.classList.add('bg-gradient-to-r', 'from-ghanaGreen', 'via-black', 'to-ghanaRed');
+             if (e.currentTarget.parentElement) {
+               e.currentTarget.parentElement.classList.add('bg-gradient-to-r', 'from-ghanaGreen', 'via-black', 'to-ghanaRed');
+               e.currentTarget.parentElement.style.backgroundImage = 'linear-gradient(to right, #006b3f, #0a0a0a, #ce1126)';
+             }
           }}
         />
       </div>
