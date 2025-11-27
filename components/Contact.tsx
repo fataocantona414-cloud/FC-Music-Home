@@ -1,7 +1,39 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { CONTACT_INFO, SOCIAL_LINKS } from '../constants';
 
 const Contact: React.FC = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: 'Booking Inquiry',
+    message: ''
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const { name, email, subject, message } = formData;
+    
+    // Construct the email body including the user's email
+    const emailBody = `Name: ${name}
+Email: ${email}
+Subject: ${subject}
+
+Message:
+${message}`;
+
+    // Construct mailto link with encoded parameters
+    const mailtoUrl = `mailto:${CONTACT_INFO.email}?subject=${encodeURIComponent(subject + ' - ' + name)}&body=${encodeURIComponent(emailBody)}`;
+    
+    // Open default email client
+    window.location.href = mailtoUrl;
+  };
+
   return (
     <div className="max-w-7xl mx-auto pt-8 animate-fade-in">
       <div className="text-center mb-10">
@@ -55,24 +87,45 @@ const Contact: React.FC = () => {
           </div>
         </div>
 
-        {/* Quick Message Form (Visual Only) */}
+        {/* Quick Message Form */}
         <div className="bg-glass backdrop-blur-md rounded-2xl p-6 border border-white/10">
           <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-white">
             <i className="fas fa-paper-plane"></i> Send a Message
           </h3>
           
-          <form className="space-y-4" action={`mailto:${CONTACT_INFO.email}`} method="post" encType="text/plain">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
               <label className="block text-xs uppercase text-gray-400 mb-1">Name</label>
               <input 
                 type="text" 
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
                 className="w-full bg-black/30 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-ghanaGold transition-colors"
                 placeholder="Your Name"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-xs uppercase text-gray-400 mb-1">Email</label>
+              <input 
+                type="email" 
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full bg-black/30 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-ghanaGold transition-colors"
+                placeholder="Your Email Address"
+                required
               />
             </div>
             <div>
               <label className="block text-xs uppercase text-gray-400 mb-1">Subject</label>
-              <select className="w-full bg-black/30 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-ghanaGold transition-colors">
+              <select 
+                name="subject"
+                value={formData.subject}
+                onChange={handleChange}
+                className="w-full bg-black/30 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-ghanaGold transition-colors"
+              >
                 <option>Booking Inquiry</option>
                 <option>Feature Request</option>
                 <option>Press / Interview</option>
@@ -83,8 +136,12 @@ const Contact: React.FC = () => {
               <label className="block text-xs uppercase text-gray-400 mb-1">Message</label>
               <textarea 
                 rows={4}
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
                 className="w-full bg-black/30 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-ghanaGold transition-colors"
                 placeholder="How can we work together?"
+                required
               ></textarea>
             </div>
             <button 
