@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,13 +13,13 @@
     <meta property="og:title" content="Fatao Cantona - Official Website">
     <meta property="og:description" content="Official artist portfolio for Ghanaian Rapper & Afrobeat Artist Fatao Cantona. Stream music, check upcoming shows, and support the movement.">
     <!-- Using the high-res thumbnail link for social preview -->
-    <meta property="og:image" content="https://drive.google.com/uc?export=view&id=1OXqITsHC47GDUADr7u1wzIXPqNCYO7o4">
+    <meta property="og:image" content="https://lh3.googleusercontent.com/d/1OXqITsHC47GDUADr7u1wzIXPqNCYO7o4=w2000">
 
     <!-- Twitter Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Fatao Cantona - Official Website">
     <meta name="twitter:description" content="Official artist portfolio for Ghanaian Rapper & Afrobeat Artist Fatao Cantona.">
-    <meta name="twitter:image" content="https://drive.google.com/uc?export=view&id=1OXqITsHC47GDUADr7u1wzIXPqNCYO7o4">
+    <meta name="twitter:image" content="https://lh3.googleusercontent.com/d/1OXqITsHC47GDUADr7u1wzIXPqNCYO7o4=w2000">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -126,8 +127,8 @@
             tagline: "Ghanaian Rapper & Afrobeat Artist",
             location: "Techiman, Bono East, Ghana",
             image: "https://yt3.googleusercontent.com/ytc/AIdro_n6czAJLhZEsN6IifapwtZiycxoo43PHRE_tR-3FOjtzg=s900-c-k-c0x00ffffff-no-rj",
-            // Using Google Drive Direct Link (export=view)
-            coverImage: "https://drive.google.com/uc?export=view&id=1OXqITsHC47GDUADr7u1wzIXPqNCYO7o4",
+            // Using Google Content CDN for reliable image loading
+            coverImage: "https://lh3.googleusercontent.com/d/1OXqITsHC47GDUADr7u1wzIXPqNCYO7o4=w2000",
             flagImage: "https://www.citypng.com/public/uploads/preview/ghana-round-metal-framed-flag-icon-png-733961694955658eoaq03f93z.png",
             stats: [
                 { value: "15K+", label: "Streams" },
@@ -155,8 +156,8 @@
                 title: 'Culture & Heritage Fest',
                 date: 'Sat, 20th Dec 2025 • 10:00 AM',
                 venue: 'Techiman - Astroturf',
-                // Using Google Drive Direct Link (export=view)
-                flyerUrl: 'https://drive.google.com/uc?export=view&id=1U39_LTl0HBbRf3Y9GShXDwL32Rei6N2d', 
+                // Using Google Content CDN for reliable image loading
+                flyerUrl: 'https://lh3.googleusercontent.com/d/1U39_LTl0HBbRf3Y9GShXDwL32Rei6N2d=w1000', 
                 ticketLink: '#' 
             }
         ];
@@ -525,16 +526,18 @@ ${message}`;
                 // Construct mailto link with encoded parameters
                 const mailtoUrl = `mailto:${CONTACT_INFO.email}?subject=${encodeURIComponent(subject + ' - ' + name)}&body=${encodeURIComponent(emailBody)}`;
                 
-                // Open default email client
-                window.location.href = mailtoUrl;
-
-                // Reset Form Data immediately after trigger
+                // Reset Form Data immediately BEFORE the redirect
                 setFormData({
                     name: '',
                     email: '',
                     subject: 'Booking Inquiry',
                     message: ''
                 });
+
+                // Use a short timeout to ensure state updates before opening email client
+                setTimeout(() => {
+                    window.location.href = mailtoUrl;
+                }, 100);
             };
 
             return (

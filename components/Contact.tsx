@@ -30,16 +30,18 @@ ${message}`;
     // Construct mailto link with encoded parameters
     const mailtoUrl = `mailto:${CONTACT_INFO.email}?subject=${encodeURIComponent(subject + ' - ' + name)}&body=${encodeURIComponent(emailBody)}`;
     
-    // Open default email client
-    window.location.href = mailtoUrl;
-
-    // Reset Form Data immediately
+    // Reset Form Data immediately BEFORE the redirect
     setFormData({
       name: '',
       email: '',
       subject: 'Booking Inquiry',
       message: ''
     });
+
+    // Use a short timeout to ensure state updates before opening email client
+    setTimeout(() => {
+        window.location.href = mailtoUrl;
+    }, 100);
   };
 
   return (
