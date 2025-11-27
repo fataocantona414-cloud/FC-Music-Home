@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 
 const Donate: React.FC = () => {
@@ -42,15 +41,21 @@ const Donate: React.FC = () => {
         </p>
 
         <div className="text-center px-4">
-          <a
-            href="https://paystack.shop/pay/-xpaiesbku"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-block w-full max-w-sm bg-gradient-to-r from-ghanaGreen to-ghanaGold text-black font-extrabold py-5 rounded-xl shadow-lg hover:shadow-2xl hover:shadow-ghanaGold/30 transition-all active:scale-[0.98] duration-200 flex items-center justify-center space-x-3 mx-auto border border-white/10"
-          >
-            <i className="fas fa-hand-holding-heart text-2xl"></i>
-            <span className="text-xl">Donate Securely via Paystack</span>
-          </a>
+          <div className="relative inline-block w-full max-w-sm mx-auto group">
+             {/* Pulsing Glow Effect Behind Button */}
+             <div className="absolute inset-0 bg-ghanaGold blur-xl opacity-20 group-hover:opacity-40 rounded-xl transition-opacity duration-500 animate-pulse-glow"></div>
+             
+             <a
+                href="https://paystack.shop/pay/-xpaiesbku"
+                target="_blank"
+                rel="noreferrer"
+                className="relative z-10 block w-full bg-gradient-to-r from-ghanaGreen via-ghanaGold to-ghanaGold text-black font-extrabold py-5 rounded-xl shadow-lg hover:shadow-2xl hover:shadow-ghanaGold/30 transition-all active:scale-[0.98] duration-200 flex items-center justify-center space-x-3 border border-white/10"
+             >
+                <i className="fas fa-hand-holding-heart text-2xl animate-pulse"></i>
+                <span className="text-xl tracking-wide">Donate Securely via Paystack</span>
+             </a>
+          </div>
+
           <p className="text-sm text-gray-400 text-center pt-6 max-w-xs mx-auto leading-relaxed mb-8">
             You will be redirected to a secure payment page. <br />
             <span className="text-ghanaGold">Accepts Mobile Money, Visa, & Mastercard.</span>

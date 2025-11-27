@@ -37,22 +37,29 @@ const Navbar: React.FC<NavbarProps> = ({ currentView, setView }) => {
         </div>
 
         <div className="flex items-center gap-1 sm:gap-2">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setView(item.id)}
-              className={`
-                px-3 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 flex items-center gap-2
-                ${currentView === item.id 
-                  ? 'bg-ghanaGreen text-white shadow-lg shadow-ghanaGreen/20' 
-                  : 'text-gray-400 hover:text-white hover:bg-white/5'
-                }
-              `}
-            >
-              <i className={`${item.icon} ${currentView === item.id ? '' : 'sm:mr-0'}`}></i>
-              <span className={`${currentView === item.id ? 'inline' : 'hidden sm:inline'}`}>{item.label}</span>
-            </button>
-          ))}
+          {navItems.map((item) => {
+            const isDonate = item.id === 'donate';
+            const isActive = currentView === item.id;
+            
+            return (
+              <button
+                key={item.id}
+                onClick={() => setView(item.id)}
+                className={`
+                  px-3 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 flex items-center gap-2
+                  ${isDonate 
+                    ? 'bg-gradient-to-r from-ghanaGold to-ghanaRed text-black font-bold shadow-[0_0_10px_rgba(252,209,22,0.4)] hover:shadow-[0_0_20px_rgba(252,209,22,0.6)] hover:scale-105 ml-2'
+                    : isActive 
+                      ? 'bg-ghanaGreen text-white shadow-lg shadow-ghanaGreen/20' 
+                      : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  }
+                `}
+              >
+                <i className={`${item.icon} ${isActive || isDonate ? '' : 'sm:mr-0'} ${isDonate ? 'animate-pulse' : ''}`}></i>
+                <span className={`${isActive || isDonate ? 'inline' : 'hidden sm:inline'}`}>{item.label}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
     </nav>
