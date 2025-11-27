@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fatao Cantona - Official Website</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <!-- FontAwesome for original icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Trade Winds for the fiery style -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Trade+Winds&display=swap" rel="stylesheet">
+    
+    <!-- Custom Tailwind Config for specific Ghana colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ghanaGreen: '#006b3f',
+                        ghanaRed: '#ce1126',
+                        ghanaGold: '#fcd116',
+                        darkBg: '#0a0a0a',
+                        darkerBg: '#050505',
+                        glass: 'rgba(255, 255, 255, 0.05)',
+                    },
+                    fontFamily: {
+                        sans: ['Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif'],
+                        fiery: ['"Trade Winds"', 'cursive'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom animation that is hard to do with just Tailwind utility classes */
+        @keyframes flame {
+            0% {
+                box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+                transform: scale(1);
+            }
+            100% {
+                box-shadow: 0 4px 25px rgba(255, 107, 107, 0.8), 0 0 30px rgba(255, 167, 38, 0.6);
+                transform: scale(1.05);
+            }
+        }
+        .animate-flame {
+            animation: flame 2s ease-in-out infinite alternate;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+  }
+}
+</script>
+</head>
+<body class="bg-gradient-to-br from-darkerBg to-darkBg text-gray-50 min-h-screen">
+    <div id="root"></div>
+</body>
+</html>
