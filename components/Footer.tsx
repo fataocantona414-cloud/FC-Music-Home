@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { FOOTER_SOCIALS } from '../constants';
 import { ViewType } from '../types';
@@ -17,7 +18,7 @@ const Footer: React.FC<FooterProps> = ({ setView }) => {
             href={social.url} 
             target="_blank" 
             rel="noreferrer"
-            className="w-[50px] h-[50px] rounded-full bg-glass border border-white/10 flex items-center justify-center text-xl text-gray-100 transition-all duration-300 hover:-translate-y-1 hover:bg-ghanaGreen hover:text-white hover:shadow-lg hover:border-transparent"
+            className="w-[50px] h-[50px] rounded-full bg-glass border border-white/10 flex items-center justify-center text-xl text-gray-100 transition-all duration-300 hover:-translate-y-1 hover:scale-110 hover:bg-ghanaGreen hover:text-white hover:shadow-lg hover:border-transparent"
           >
             <i className={social.icon}></i>
           </a>

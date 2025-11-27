@@ -14,6 +14,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Trade+Winds&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <!-- Paystack Inline Script -->
+    <script src="https://js.paystack.co/v1/inline.js"></script>
     
     <!-- React & Babel for In-Browser Compilation -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -70,6 +72,14 @@
         }
         .animate-bounce-short { animation: bounceShort 1s ease-in-out infinite; }
 
+        /* Wiggle Animation for Popup Bell */
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+        }
+        .animate-wiggle { animation: wiggle 1s ease-in-out infinite; }
+        .animate-fade-in-quick { animation: fadeIn 0.3s ease-out forwards; }
+
         /* Scrollbar styling */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0a0a0a; }
@@ -98,7 +108,7 @@
             tagline: "Ghanaian Rapper & Afrobeat Artist",
             location: "Techiman, Bono East, Ghana",
             image: "https://yt3.googleusercontent.com/ytc/AIdro_n6czAJLhZEsN6IifapwtZiycxoo43PHRE_tR-3FOjtzg=s900-c-k-c0x00ffffff-no-rj",
-            // Direct Link for Cover Image (Thumbnail ID + size format for robustness)
+            // Using the thumbnail endpoint with size parameter (sz=w2000) for high-res robust loading
             coverImage: "https://drive.google.com/thumbnail?id=1OXqITsHC47GDUADr7u1wzIXPqNCYO7o4&sz=w2000",
             flagImage: "https://www.citypng.com/public/uploads/preview/ghana-round-metal-framed-flag-icon-png-733961694955658eoaq03f93z.png",
             stats: [
@@ -121,13 +131,20 @@
             location: "Techiman, Ghana"
         };
 
+        // --- PAYSTACK CONFIGURATION ---
+        const PAYSTACK_CONFIG = {
+            publicKey: 'pk_live_d7860c9115f0186f6e5e445a6594881972f4c63e',
+            currency: 'GHS', // Ghana Cedis
+            email: CONTACT_INFO.email, 
+        };
+
         const UPCOMING_SHOWS = [
             {
                 id: '1',
                 title: 'Culture & Heritage Fest',
                 date: 'Sat, 20th Dec 2025 • 10:00 AM',
                 venue: 'Techiman - Astroturf',
-                // Direct Link for Flyer (Thumbnail ID + size format)
+                // Using the thumbnail endpoint for the flyer as well
                 flyerUrl: 'https://drive.google.com/thumbnail?id=1U39_LTl0HBbRf3Y9GShXDwL32Rei6N2d&sz=w1000', 
                 ticketLink: '#' 
             }
@@ -531,120 +548,120 @@
         };
 
         const Donate = () => {
-            const [amount, setAmount] = useState('');
-            const [name, setName] = useState('');
-            const [network, setNetwork] = useState('MTN');
-            const [step, setStep] = useState(1);
-            const [copied, setCopied] = useState(false);
-            const cleanMomoNumber = "0547077779"; 
-            const momoName = "Fatao Cantona";
+            // 1. STATE MANAGEMENT
+            const [amount, setAmount] = useState(5); // Default to 5 GHS
+            const [name, setName] = useState(''); // Optional name
+            const [paymentSuccess, setPaymentSuccess] = useState(false);
 
-            const handleMomoSubmit = (e) => {
+            // 2. PAYMENT INITIALIZER FUNCTION
+            const initializePayment = (e) => {
                 e.preventDefault();
-                if (!amount) return;
-                setStep(2);
+
+                // Paystack requires the amount in PESEWAS, so multiply by 100
+                const amountInPesewas = amount * 100;
+
+                if (amountInPesewas < 100) { // Minimum of 1 GHS (100 pesewas)
+                    alert("Please enter a donation amount of 1 GHS or more.");
+                    return;
+                }
+
+                const config = {
+                    key: PAYSTACK_CONFIG.publicKey,
+                    email: PAYSTACK_CONFIG.email,
+                    amount: amountInPesewas,
+                    ref: '' + Math.floor((Math.random() * 1000000000) + 1), // Unique reference
+                    metadata: {
+                        name: name || 'Anonymous Donor',
+                        custom_fields: [{
+                            display_name: "Purpose",
+                            variable_name: "purpose",
+                            value: "Artist Support Donation"
+                        }]
+                    },
+                    callback: (response) => {
+                        // Payment was successful (transaction completed)
+                        console.log('Payment successful. Ref:', response.reference);
+                        setPaymentSuccess(true);
+                    },
+                    onClose: () => {
+                        // Payment window closed without completion
+                        console.log('Payment window closed.');
+                    },
+                };
+
+                // 3. TRIGGER THE PAYSTACK POPUP
+                // Use type assertion or check if window.PaystackPop exists
+                const paystack = new window.PaystackPop();
+                paystack.newTransaction(config);
             };
 
-            const handleCopyNumber = () => {
-                navigator.clipboard.writeText(cleanMomoNumber);
-                setCopied(true);
-                setTimeout(() => setCopied(false), 2000);
-            };
-
-            const handleSentConfirm = () => {
-                const subject = `Donation Sent: ₵${amount} from ${name || 'Fan'}`;
-                const body = `Hello Fatao,\n\nI have just sent a Mobile Money donation to support your music.\n\n--- Transaction Details ---\nAmount: ₵${amount}\nNetwork: ${network}\nSender Name: ${name || 'Anonymous'}\n\nPlease check your wallet.\n\nKeep up the great work!`;
-                window.location.href = `mailto:${CONTACT_INFO.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                setStep(3);
-            };
-
+            // 4. RENDER LOGIC
             return (
                 <div className="max-w-5xl mx-auto pt-8 animate-fade-in">
-                    <div className="text-center mb-10">
-                        <h2 className="text-3xl font-bold mb-3">Support The Movement</h2>
-                        <p className="text-gray-400">Make a secure donation directly via Mobile Money.</p>
-                    </div>
-                    <div className="bg-glass backdrop-blur-md rounded-2xl border border-white/10 overflow-hidden shadow-2xl relative">
-                        <div className="h-1 w-full bg-ghanaGold"></div>
-                        <div className="p-6 sm:p-8">
-                            {step === 1 && (
-                                <form onSubmit={handleMomoSubmit} className="space-y-5 max-w-2xl mx-auto">
-                                    <div className="text-center mb-6">
-                                        <div className="inline-block p-3 rounded-full bg-ghanaGold/10 text-ghanaGold mb-2 text-2xl"><i className="fas fa-hand-holding-dollar"></i></div>
-                                        <h3 className="text-xl font-bold text-white">Make a Donation</h3>
-                                        <p className="text-sm text-gray-400">Secure Mobile Money Transfer</p>
-                                    </div>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <div>
-                                            <label className="block text-xs uppercase text-gray-500 mb-1 font-bold">Your Name (Optional)</label>
-                                            <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-darkBg border border-white/10 rounded-lg p-3 text-white focus:border-ghanaGold outline-none transition-colors" placeholder="Kwame..." />
-                                        </div>
-                                        <div>
-                                            <label className="block text-xs uppercase text-gray-500 mb-1 font-bold">Your Network</label>
-                                            <select value={network} onChange={(e) => setNetwork(e.target.value)} className="w-full bg-darkBg border border-white/10 rounded-lg p-3 text-white focus:border-ghanaGold outline-none transition-colors appearance-none">
-                                                <option>MTN Mobile Money</option>
-                                                <option>Telecel Cash (Vodafone)</option>
-                                                <option>AirtelTigo Money</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label className="block text-xs uppercase text-gray-500 mb-1 font-bold">Amount (GHS)</label>
-                                        <div className="relative">
-                                            <span className="absolute left-3 top-3 text-gray-400 font-bold">₵</span>
-                                            <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} className="w-full bg-darkBg border border-white/10 rounded-lg p-3 pl-8 text-white focus:border-ghanaGold outline-none transition-colors font-bold text-lg" placeholder="0.00" required min="1" />
-                                        </div>
-                                    </div>
-                                    <button type="submit" className="w-full bg-gradient-to-r from-ghanaGreen to-[#004d2c] text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-green-900/50 transition-all transform hover:-translate-y-1 active:scale-95 duration-200 flex items-center justify-center gap-2 mt-4"><span>Proceed</span> <i className="fas fa-arrow-right"></i></button>
-                                </form>
-                            )}
-                            {step === 2 && (
-                                <div className="animate-fade-in max-w-2xl mx-auto">
-                                    <div className="text-center mb-6">
-                                        <div className="w-16 h-16 bg-ghanaGold/20 text-ghanaGold rounded-full flex items-center justify-center text-3xl mx-auto mb-3"><i className="fas fa-info-circle"></i></div>
-                                        <h3 className="text-xl font-bold text-white">Payment Details</h3>
-                                        <p className="text-gray-400 text-sm">Please send exactly <strong className="text-white">₵{amount}</strong> to:</p>
-                                    </div>
-                                    <div className="bg-white/5 rounded-xl p-6 mb-6 border border-white/10 relative overflow-hidden">
-                                        <div className="absolute top-0 right-0 bg-ghanaGold text-black text-[10px] font-bold px-2 py-1 rounded-bl-lg">MTN MoMo</div>
-                                        <div className="text-center">
-                                            <div className="text-sm text-gray-400 uppercase tracking-widest mb-1">Number</div>
-                                            <div className="flex items-center justify-center gap-3 mb-4">
-                                                <span className="text-3xl font-mono font-bold text-white tracking-wider">{cleanMomoNumber}</span>
-                                                <button onClick={handleCopyNumber} className="bg-white/10 hover:bg-white/20 p-2 rounded-lg text-ghanaGold transition-all active:scale-95" title="Copy Number"><i className={`fas ${copied ? 'fa-check' : 'fa-copy'}`}></i></button>
-                                            </div>
-                                            <div className="flex justify-between items-center border-t border-white/10 pt-4 text-sm">
-                                                <span className="text-gray-400">Account Name:</span><span className="font-bold text-white">{momoName}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="bg-darkBg/50 rounded-lg p-4 mb-6 text-sm text-gray-300 border border-white/5">
-                                        <h4 className="font-bold text-white mb-2 flex items-center gap-2"><i className="fas fa-list-ol text-ghanaGreen"></i> Instructions:</h4>
-                                        <ol className="list-decimal list-inside space-y-1 ml-1">
-                                            <li>Dial <strong>*170#</strong> (or your network's code)</li>
-                                            <li>Select <strong>Transfer Money</strong></li>
-                                            <li>Enter Number: <strong>{cleanMomoNumber}</strong></li>
-                                            <li>Confirm Name: <strong>{momoName}</strong></li>
-                                            <li>Enter Amount: <strong>₵{amount}</strong></li>
-                                        </ol>
-                                    </div>
-                                    <div className="flex gap-3">
-                                        <button onClick={() => setStep(1)} className="flex-1 py-3 rounded-lg border border-white/10 hover:bg-white/5 text-gray-300 font-medium transition-all active:scale-95 duration-200">Back</button>
-                                        <button onClick={handleSentConfirm} className="flex-1 py-3 rounded-lg bg-green-700 text-white font-bold hover:bg-green-600 transition-all shadow-lg active:scale-95 duration-200 flex items-center justify-center gap-2"><i className="fas fa-paper-plane"></i> I've Sent It</button>
-                                    </div>
+                    <section className="py-12 bg-darkBg text-white rounded-lg shadow-xl border border-ghanaGold/20 animate-fade-in relative bg-glass backdrop-blur-md">
+                         <div className="h-1 w-full bg-ghanaGold absolute top-0 left-0 rounded-t-lg"></div>
+                        <h2 className="text-3xl font-bold text-center mb-2 text-ghanaGold mt-4">Support Fatao Cantona</h2>
+                        <p className="text-gray-400 text-center mb-10 max-w-lg mx-auto">
+                            Your support helps fund new music, videos, and live performances. Medaase!
+                        </p>
+
+                        {/* A. SUCCESS MESSAGE */}
+                        {paymentSuccess ? (
+                            <div className="text-center py-20 px-4 bg-darkerBg border border-ghanaGreen rounded-lg max-w-md mx-auto">
+                                <i className="fas fa-check-circle text-6xl text-ghanaGreen mb-4 animate-bounce-short"></i>
+                                <h3 className="text-3xl font-bold text-white">Payment Successful!</h3>
+                                <p className="text-gray-300 mt-2">Medaase! 🙏 Thank you for your generous support. Your contribution is greatly appreciated.</p>
+                                <button
+                                    onClick={() => setPaymentSuccess(false)}
+                                    className="mt-6 bg-ghanaGold text-black font-bold py-2 px-6 rounded-full hover:bg-white transition duration-200"
+                                >
+                                    Make Another Donation
+                                </button>
+                            </div>
+
+                        ) : (
+                            /* B. DONATION FORM */
+                            <form onSubmit={initializePayment} className="max-w-sm mx-auto space-y-6 p-6 bg-darkerBg rounded-lg shadow-inner border border-white/5">
+                                
+                                <div>
+                                    <label htmlFor="amount" className="block text-sm font-medium text-gray-300 mb-2">Amount (GHS)</label>
+                                    <input
+                                        type="number"
+                                        id="amount"
+                                        value={amount}
+                                        onChange={(e) => setAmount(Math.max(1, parseFloat(e.target.value)))} // Ensure minimum 1
+                                        min="1"
+                                        step="1"
+                                        placeholder="Minimum 1 GHS"
+                                        required
+                                        className="w-full bg-black/30 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-ghanaGold transition-colors text-lg"
+                                    />
                                 </div>
-                            )}
-                            {step === 3 && (
-                                <div className="animate-fade-in text-center py-4">
-                                    <div className="w-20 h-20 bg-ghanaGreen rounded-full flex items-center justify-center text-4xl text-white mx-auto mb-6 shadow-xl shadow-green-900/40 animate-bounce-short"><i className="fas fa-check"></i></div>
-                                    <h3 className="text-2xl font-bold text-white mb-2">Medaase! 🙏</h3>
-                                    <p className="text-ghanaGold font-medium text-lg mb-4">Thank you for your support.</p>
-                                    <p className="text-gray-400 text-sm mb-8 leading-relaxed max-w-sm mx-auto">I've received your notification for <strong>₵{amount}</strong>. Your contribution helps keep the music alive!</p>
-                                    <button onClick={() => { setAmount(''); setName(''); setStep(1); }} className="w-full bg-white/10 hover:bg-white/20 text-white font-bold py-3 rounded-xl border border-white/10 transition-all active:scale-95 duration-200">Make Another Donation</button>
+
+                                <div>
+                                    <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">Your Name (Optional)</label>
+                                    <input
+                                        type="text"
+                                        id="name"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        placeholder="E.g., Loyal Fan"
+                                        className="w-full bg-black/30 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-ghanaGold transition-colors"
+                                    />
                                 </div>
-                            )}
-                        </div>
-                    </div>
+                                
+                                <button
+                                    type="submit"
+                                    className="w-full bg-gradient-to-r from-ghanaGreen to-ghanaGold text-black font-extrabold py-3 rounded-lg shadow-lg hover:shadow-lg hover:shadow-ghanaGold/50 transition-all active:scale-[0.98] duration-200 flex items-center justify-center space-x-2"
+                                >
+                                    <i className="fas fa-mobile-alt"></i>
+                                    <span>Donate via Mobile Money / Card</span>
+                                </button>
+
+                                <p className="text-xs text-gray-500 text-center pt-2">Powered by Paystack. Secure MoMo, Visa, & Mastercard payments accepted.</p>
+                            </form>
+                        )}
+                    </section>
                 </div>
             );
         };
@@ -702,9 +719,71 @@
             );
         };
 
+        // --- NEW COMPONENT: Email Pop-up Modal ---
+        const EmailPopup = ({ isVisible, onClose }) => {
+            if (!isVisible) return null;
+
+            // Simple mock submit handler for demonstration
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                // Close after a brief delay to simulate success
+                const btn = e.target.querySelector('button');
+                if (btn) {
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = 'Subscribed! ✅';
+                    btn.classList.remove('bg-gradient-to-r');
+                    btn.classList.add('bg-ghanaGreen', 'text-white');
+                    setTimeout(() => {
+                        onClose();
+                    }, 1200);
+                } else {
+                    onClose();
+                }
+            };
+
+            return (
+                <div className="fixed inset-0 z-[101] bg-black/80 flex items-center justify-center p-4 animate-fade-in-quick">
+                    <div className="bg-darkerBg rounded-xl border border-ghanaGold/50 shadow-2xl p-6 w-full max-w-sm relative transform scale-up-center">
+                        <button onClick={onClose} className="absolute top-3 right-3 text-gray-400 hover:text-white transition-colors text-xl">
+                            <i className="fas fa-times-circle"></i>
+                        </button>
+                        
+                        <div className="text-center mb-6">
+                            <i className="fas fa-envelope-open-text text-4xl text-ghanaGold mb-3 animate-wiggle"></i>
+                            <h3 className="text-2xl font-bold text-white mb-2">Never Miss a Drop!</h3>
+                            <ul className="text-left text-gray-300 text-sm space-y-3 mb-4 bg-white/5 p-4 rounded-lg border border-white/5">
+                                <li className="flex items-center gap-3">
+                                    <i className="fas fa-music text-ghanaGold"></i> 
+                                    <span>Latest Releases & Videos</span>
+                                </li>
+                                <li className="flex items-center gap-3">
+                                    <i className="fas fa-ticket text-ghanaRed"></i> 
+                                    <span>Upcoming Shows & Tickets</span>
+                                </li>
+                                <li className="flex items-center gap-3">
+                                    <i className="fas fa-star text-ghanaGreen"></i> 
+                                    <span>Exclusive Behind-the-Scenes</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <form className="space-y-4" onSubmit={handleSubmit}>
+                            <input type="email" placeholder="Enter your email address..." className="w-full bg-black/30 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-ghanaGold transition-colors" required />
+                            <button type="submit" className="w-full bg-gradient-to-r from-ghanaGold to-ghanaRed text-black font-bold py-3 rounded-lg shadow-lg hover:shadow-ghanaGold/50 transition-all active:scale-95 duration-200">
+                                Subscribe for Free
+                            </button>
+                            <p className="text-center text-xs text-gray-500">No spam, just music. Unsubscribe anytime.</p>
+                        </form>
+
+                    </div>
+                </div>
+            );
+        };
+
         const App = () => {
             const [currentView, setCurrentView] = useState('home');
             const [loading, setLoading] = useState(true);
+            const [showPopup, setShowPopup] = useState(false);
 
             useEffect(() => {
                 const timer = setTimeout(() => { setLoading(false); }, 3500);
@@ -714,6 +793,22 @@
             useEffect(() => {
                 if (!loading) window.scrollTo(0, 0);
             }, [currentView, loading]);
+
+            // Email Popup Logic
+            useEffect(() => {
+                const hasSeenPopup = sessionStorage.getItem('popupSeen');
+                if (!hasSeenPopup) {
+                    const timer = setTimeout(() => {
+                        setShowPopup(true);
+                    }, 1500); // Pops up after 1.5 seconds as requested
+                    return () => clearTimeout(timer);
+                }
+            }, []);
+
+            const handleClosePopup = () => {
+                setShowPopup(false);
+                sessionStorage.setItem('popupSeen', 'true'); // Mark as seen for this session
+            };
 
             const renderContent = () => {
                 switch (currentView) {
@@ -762,6 +857,7 @@
                         {renderContent()}
                         <Footer setView={setCurrentView} />
                     </div>
+                    <EmailPopup isVisible={showPopup} onClose={handleClosePopup} />
                 </div>
             );
         };
@@ -771,4 +867,3 @@
     </script>
 </body>
 </html>
-

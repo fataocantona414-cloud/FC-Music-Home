@@ -6,8 +6,8 @@ export const PROFILE: ProfileData = {
   tagline: "Ghanaian Rapper & Afrobeat Artist",
   location: "Techiman, Bono East, Ghana",
   image: "https://yt3.googleusercontent.com/ytc/AIdro_n6czAJLhZEsN6IifapwtZiycxoo43PHRE_tR-3FOjtzg=s900-c-k-c0x00ffffff-no-rj",
-  // Using the export=view format which is more reliable for direct embedding
-  coverImage: "https://drive.google.com/uc?export=view&id=1OXqITsHC47GDUADr7u1wzIXPqNCYO7o4",
+  // Using the thumbnail endpoint with size parameter (sz=w2000) for high-res robust loading
+  coverImage: "https://drive.google.com/thumbnail?id=1OXqITsHC47GDUADr7u1wzIXPqNCYO7o4&sz=w2000",
   flagImage: "https://www.citypng.com/public/uploads/preview/ghana-round-metal-framed-flag-icon-png-733961694955658eoaq03f93z.png",
   stats: [
     { value: "15K+", label: "Streams" },
@@ -36,8 +36,8 @@ export const UPCOMING_SHOWS: ShowItem[] = [
     title: 'Culture & Heritage Fest',
     date: 'Sat, 20th Dec 2025 • 10:00 AM',
     venue: 'Techiman - Astroturf',
-    // Using lh3.googleusercontent.com/d/ID format which is more reliable for direct image embedding than standard Drive or Mediafire links
-    flyerUrl: 'https://lh3.googleusercontent.com/d/1U39_LTl0HBbRf3Y9GShXDwL32Rei6N2d', 
+    // Using the thumbnail endpoint for the flyer as well
+    flyerUrl: 'https://drive.google.com/thumbnail?id=1U39_LTl0HBbRf3Y9GShXDwL32Rei6N2d&sz=w1000', 
     ticketLink: '#' 
   }
 ];
