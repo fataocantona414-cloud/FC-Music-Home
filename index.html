@@ -4,18 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fatao Cantona - Official Website</title>
+    <meta name="description" content="Official artist portfolio website for Ghanaian Rapper & Afrobeat Artist Fatao Cantona.">
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Confetti Library -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
-    <!-- FontAwesome for original icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts: Trade Winds for the fiery style -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Trade+Winds&display=swap" rel="stylesheet">
     
-    <!-- Custom Tailwind Config for specific Ghana colors -->
+    <!-- External Libraries -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Trade+Winds&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    
+    <!-- React & Babel for In-Browser Compilation -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Tailwind Config -->
     <script>
         tailwind.config = {
             theme: {
@@ -36,33 +40,733 @@
             }
         }
     </script>
+
+    <!-- Custom CSS -->
     <style>
-        /* Custom animation that is hard to do with just Tailwind utility classes */
+        /* Animations */
         @keyframes flame {
-            0% {
-                box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
-                transform: scale(1);
-            }
-            100% {
-                box-shadow: 0 4px 25px rgba(255, 107, 107, 0.8), 0 0 30px rgba(255, 167, 38, 0.6);
-                transform: scale(1.05);
-            }
+            0% { box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4); transform: scale(1); }
+            100% { box-shadow: 0 4px 25px rgba(255, 107, 107, 0.8), 0 0 30px rgba(255, 167, 38, 0.6); transform: scale(1.05); }
         }
-        .animate-flame {
-            animation: flame 2s ease-in-out infinite alternate;
+        .animate-flame { animation: flame 2s ease-in-out infinite alternate; }
+
+        @keyframes scaleUp {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
+        .scale-up-center { animation: scaleUp 1s ease-out forwards; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        .animate-fade-in-delayed { opacity: 0; animation: fadeIn 1s ease-out 1s forwards; }
+
+        @keyframes bounceShort {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-bounce-short { animation: bounceShort 1s ease-in-out infinite; }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
     </style>
 <script type="importmap">
 {
   "imports": {
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
     "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/"
   }
 }
 </script>
 </head>
 <body class="bg-gradient-to-br from-darkerBg to-darkBg text-gray-50 min-h-screen">
     <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- CONSTANTS ---
+        const PROFILE = {
+            name: "Fatao Cantona",
+            tagline: "Ghanaian Rapper & Afrobeat Artist",
+            location: "Techiman, Bono East, Ghana",
+            image: "https://yt3.googleusercontent.com/ytc/AIdro_n6czAJLhZEsN6IifapwtZiycxoo43PHRE_tR-3FOjtzg=s900-c-k-c0x00ffffff-no-rj",
+            // Direct Link for Cover Image (High reliability format)
+            coverImage: "https://lh3.googleusercontent.com/d/1OXqITsHC47GDUADr7u1wzIXPqNCYO7o4",
+            flagImage: "https://www.citypng.com/public/uploads/preview/ghana-round-metal-framed-flag-icon-png-733961694955658eoaq03f93z.png",
+            stats: [
+                { value: "15K+", label: "Streams" },
+                { value: "24", label: "Releases" },
+                { value: "5", label: "Countries" }
+            ]
+        };
+
+        const ABOUT_TEXT = {
+            intro: "Fatao Cantona is a dynamic force in the Ghanaian music scene, blending the rhythmic pulse of Afrobeat with the lyrical dexterity of Hip Hop. Hailing from Techiman in the Bono East Region, he represents the new wave of West African talent.",
+            bio: "Starting his journey in the vibrant streets of Techiman, Fatao discovered his passion for music as a tool for storytelling and community empowerment. His unique sound captures the essence of Ghanaian life, fusing traditional highlife influences with modern drill and trap beats. Known for his energetic performances and authentic lyricism, Fatao Cantona has rapidly grown a loyal fanbase across Ghana and beyond.",
+            mission: "To put Techiman on the global map and inspire the youth through music that speaks truth to power while keeping the dancefloor moving."
+        };
+
+        const CONTACT_INFO = {
+            email: "fataocantona9@gmail.com",
+            phone: "+233 547 077 779",
+            whatsapp: "https://wa.me/233547077779",
+            location: "Techiman, Ghana"
+        };
+
+        const UPCOMING_SHOWS = [
+            {
+                id: '1',
+                title: 'Culture & Heritage Fest',
+                date: 'Sat, 20th Dec 2025 • 10:00 AM',
+                venue: 'Techiman - Astroturf',
+                // Direct Link for Flyer (High reliability format)
+                flyerUrl: 'https://lh3.googleusercontent.com/d/1U39_LTl0HBbRf3Y9GShXDwL32Rei6N2d', 
+                ticketLink: '#' 
+            }
+        ];
+
+        const MUSIC_LINKS = [
+            { platform: "Spotify", iconClass: "fab fa-spotify", description: "Stream on Spotify", url: "https://open.spotify.com/artist/7zfwphhbHpq3HP21GYr9Bs?si=AalG5vfEQ4WU1nzsRw25Fg" },
+            { platform: "Apple Music", iconClass: "fab fa-apple", description: "Listen on Apple Music", url: "https://music.apple.com/ng/artist/fatao-cantona/1712679727" },
+            { platform: "YouTube", iconClass: "fab fa-youtube", description: "Music videos & more", url: "https://www.youtube.com/@fataocantona" },
+            { platform: "Audiomack", iconClass: "fas fa-headphones", description: "Free downloads", url: "https://audiomack.com/fataocantona" },
+            { platform: "All Platforms", iconClass: "fas fa-music", description: "All songs on Linktree", url: "https://linktr.ee/fatao_cantona", highlight: true }
+        ];
+
+        const SOCIAL_LINKS = [
+            { platform: "Instagram", iconClass: "fab fa-instagram", description: "@fataocantona", url: "https://www.instagram.com/fataocantona/" },
+            { platform: "TikTok", iconClass: "fab fa-tiktok", description: "@fataocantona", url: "https://www.tiktok.com/@fataocantona" },
+            { platform: "Twitter/X", iconClass: "fab fa-twitter", description: "@fatao_cantona", url: "https://x.com/fatao_cantona" },
+            { platform: "Facebook", iconClass: "fab fa-facebook", description: "Fatao Cantona", url: "https://www.facebook.com/fatao.cantona" },
+            { platform: "Email", iconClass: "fas fa-envelope", description: "fataocantona9@gmail.com", url: "mailto:fataocantona9@gmail.com" },
+            { platform: "WhatsApp", iconClass: "fab fa-whatsapp", description: "+233 547077779", url: "https://wa.me/233547077779" }
+        ];
+
+        const FOOTER_SOCIALS = [
+            { icon: "fab fa-instagram", url: "https://www.instagram.com/fataocantona/" },
+            { icon: "fab fa-tiktok", url: "https://www.tiktok.com/@fataocantona" },
+            { icon: "fab fa-twitter", url: "https://x.com/fatao_cantona" },
+            { icon: "fab fa-facebook-f", url: "https://www.facebook.com/fatao.cantona" },
+            { icon: "fab fa-youtube", url: "https://www.youtube.com/@fataocantona" }
+        ];
+
+        // --- COMPONENTS ---
+
+        const Navbar = ({ currentView, setView }) => {
+            const navItems = [
+                { id: 'home', label: 'Home', icon: 'fas fa-home' },
+                { id: 'about', label: 'About', icon: 'fas fa-user' },
+                { id: 'contact', label: 'Contact', icon: 'fas fa-envelope' },
+                { id: 'donate', label: 'Support', icon: 'fas fa-hand-holding-heart' },
+            ];
+
+            return (
+                <nav className="fixed top-0 left-0 right-0 z-50 px-4 py-3 bg-darkBg/90 backdrop-blur-lg border-b border-white/5 shadow-2xl">
+                    <div className="max-w-7xl mx-auto flex items-center justify-between">
+                        <div 
+                            className="cursor-pointer flex items-center gap-2 group select-none transition-transform hover:scale-105 duration-300"
+                            onClick={() => setView('home')}
+                        >
+                            <div className="relative w-8 h-8 flex items-center justify-center">
+                                <i className="fas fa-microphone-lines text-2xl text-gray-200 z-10 group-hover:text-ghanaGold transition-colors"></i>
+                                <i className="fas fa-fire text-ghanaRed absolute bottom-[-2px] right-[-6px] text-lg drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] animate-pulse"></i>
+                            </div>
+                            <div className="font-black text-2xl italic tracking-tighter flex items-baseline leading-none">
+                                <span className="text-ghanaGold drop-shadow-md mr-[1px]">F</span>
+                                <span className="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent drop-shadow-md">C</span>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-1 sm:gap-2">
+                            {navItems.map((item) => (
+                                <button
+                                    key={item.id}
+                                    onClick={() => setView(item.id)}
+                                    className={`
+                                        px-3 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 flex items-center gap-2
+                                        ${currentView === item.id 
+                                            ? 'bg-ghanaGreen text-white shadow-lg shadow-ghanaGreen/20' 
+                                            : 'text-gray-400 hover:text-white hover:bg-white/5'
+                                        }
+                                    `}
+                                >
+                                    <i className={`${item.icon} ${currentView === item.id ? '' : 'sm:mr-0'}`}></i>
+                                    <span className={`${currentView === item.id ? 'inline' : 'hidden sm:inline'}`}>{item.label}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </nav>
+            );
+        };
+
+        const Header = () => {
+            return (
+                <header className="relative max-w-6xl mx-auto mb-8">
+                    {/* Cover Image Section */}
+                    <div className="h-48 md:h-80 w-full relative rounded-b-3xl overflow-hidden group border-b border-white/10 shadow-2xl bg-darkerBg">
+                        <div className="absolute inset-0 bg-gradient-to-t from-darkBg via-transparent to-transparent z-10 opacity-90"></div>
+                        <img 
+                            src={PROFILE.coverImage} 
+                            alt="Cover" 
+                            className="w-full h-full object-cover object-top transition-transform duration-[10s] ease-in-out group-hover:scale-110"
+                            onError={(e) => {
+                                // Fallback to a nice gradient if the image link fails
+                                e.currentTarget.style.display = 'none';
+                                if (e.currentTarget.parentElement) {
+                                    e.currentTarget.parentElement.style.background = 'linear-gradient(to right, #006b3f, #0a0a0a, #ce1126)';
+                                }
+                            }}
+                        />
+                    </div>
+
+                    {/* Profile Content - Overlapping the Cover */}
+                    <div className="relative -mt-20 md:-mt-24 z-20 flex flex-col items-center px-4">
+                        <div className="profile-container relative inline-block mb-4">
+                            <img 
+                                src={PROFILE.image} 
+                                alt={PROFILE.name} 
+                                className="w-[160px] h-[160px] md:w-[200px] md:h-[200px] rounded-full object-cover border-4 border-darkBg ring-4 ring-ghanaGold shadow-2xl transition-all duration-300 hover:scale-105 bg-darkBg"
+                            />
+                            <img 
+                                src={PROFILE.flagImage} 
+                                alt="Ghana Flag" 
+                                className="absolute bottom-4 right-4 w-[40px] h-[40px] md:w-[50px] md:h-[50px] rounded-full border-[3px] border-darkBg shadow-lg"
+                                onError={(e) => (e.currentTarget.style.display = 'none')}
+                            />
+                        </div>
+
+                        <div className="text-center animate-fade-in">
+                            <h1 className="text-4xl sm:text-6xl mb-2 tracking-wide font-fiery bg-gradient-to-b from-[#ffbf00] via-[#ff4500] to-[#ff0000] bg-clip-text text-transparent drop-shadow-[0_2px_4px_rgba(200,0,0,0.5)]">
+                                {PROFILE.name}
+                            </h1>
+                            <p className="text-lg text-gray-300 mb-5 font-light tracking-wide">{PROFILE.tagline}</p>
+
+                            <div className="flex items-center justify-center gap-2 mb-6 text-ghanaGold font-medium bg-white/5 inline-flex px-4 py-1 rounded-full border border-white/10 backdrop-blur-sm">
+                                <i className="fas fa-map-marker-alt"></i>
+                                <span>{PROFILE.location}</span>
+                            </div>
+
+                            <div className="flex justify-center gap-8 md:gap-12 mt-2">
+                                {PROFILE.stats.map((stat, index) => (
+                                    <div key={index} className="text-center group cursor-default">
+                                        <div className="text-2xl md:text-3xl font-bold text-white group-hover:text-ghanaGold transition-colors">{stat.value}</div>
+                                        <div className="text-[10px] md:text-xs text-gray-500 group-hover:text-gray-300 uppercase tracking-[0.2em] mt-1 transition-colors">{stat.label}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </header>
+            );
+        };
+
+        const MusicPlayer = () => {
+            return (
+                <section className="bg-glass backdrop-blur-md rounded-xl p-6 my-8 shadow-2xl border border-white/10 relative max-w-6xl mx-auto">
+                    <div className="absolute -top-3 right-5 bg-gradient-to-tr from-[#ff6b6b] via-[#ffa726] to-[#ffeb3b] text-black px-4 py-2 rounded-full font-bold text-xs uppercase tracking-wide shadow-lg animate-flame z-10">
+                        🔥 NEW
+                    </div>
+                    <div className="flex items-center gap-4 mb-4">
+                        <img 
+                            src="https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/6d/b0/e3/6db0e356-2290-9234-1e87-ad0924e38098/artwork.jpg/1200x630bf-60.jpg" 
+                            alt="RIB - Rap Is Back" 
+                            className="w-[70px] h-[70px] rounded-lg object-cover border-2 border-ghanaGold"
+                            onError={(e) => {
+                                e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAiIGhlaWdodD0iNzAiIHZpZXdCb3g9IjAgMCA3MCA3MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjcwIiBoZWlnaHQ9IjcwIiByeD0iOCIgZmlsbD0iIzAwNkIzRiIvPgo8dGV4dCB4PSIzNSIgeT0iMzUiIGZvbnQtc2l6ZT0iOCIgZmlsbD0iI0ZDRDExNiIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPlJJQjwvdGV4dD4KPHRleHQgeD0iMzUiIHk9IjQ1IiBmb250LXNpemU9IjYiIGZpbGw9IndoaXRlIiBmb250LXdlaWdodD0iNjAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj5SZXR1cm4gSXMgQmFjazwvdGV4dD4KPC9zdmc+';
+                            }}
+                        />
+                        <div>
+                            <h3 className="text-lg font-bold">RIB - RAP IS BACK</h3>
+                            <p className="text-gray-400 text-sm">Fatao Cantona • Single • 2023</p>
+                        </div>
+                    </div>
+                    <div className="w-full">
+                        <iframe 
+                            style={{ borderRadius: '12px' }}
+                            src="https://open.spotify.com/embed/track/1ywIoE8d8HdTeUMBlR40S6?utm_source=generator&theme=0" 
+                            width="100%" 
+                            height="152" 
+                            frameBorder="0" 
+                            allowFullScreen 
+                            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                            loading="lazy"
+                            title="Spotify Player"
+                        ></iframe>
+                    </div>
+                    <div className="text-center mt-6">
+                        <a 
+                            href="https://linktr.ee/fatao_cantona" 
+                            target="_blank" 
+                            rel="noreferrer"
+                            className="inline-block bg-gradient-to-r from-ghanaGreen to-ghanaRed text-white px-8 py-3 rounded-full font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-lg no-underline"
+                        >
+                            🎵 Stream All My Songs Everywhere
+                        </a>
+                    </div>
+                </section>
+            );
+        };
+
+        const LinkSection = ({ title, links }) => {
+            return (
+                <section className="my-10 max-w-7xl mx-auto">
+                    <div className="text-center relative mb-6">
+                        <h2 className="text-2xl font-normal inline-block relative pb-2">
+                            {title}
+                            <span className="absolute bottom-0 left-0 w-full h-[3px] bg-gradient-to-r from-ghanaGold to-ghanaRed rounded-full"></span>
+                        </h2>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {links.map((link, index) => (
+                            <a 
+                                key={index}
+                                href={link.url} 
+                                target="_blank" 
+                                rel="noreferrer"
+                                className={`
+                                    bg-glass backdrop-blur-md rounded-xl p-5 text-center transition-all duration-300 
+                                    border border-white/10 hover:-translate-y-1 hover:bg-white/10 hover:shadow-xl hover:border-ghanaGold
+                                    flex flex-col items-center justify-center h-full group
+                                `}
+                            >
+                                <div className="text-3xl mb-3 text-ghanaGold group-hover:scale-110 transition-transform">
+                                    <i className={link.iconClass}></i>
+                                </div>
+                                <div className="font-semibold mb-1 text-base">{link.platform}</div>
+                                <div className="text-xs text-gray-400">{link.description}</div>
+                            </a>
+                        ))}
+                    </div>
+                </section>
+            );
+        };
+
+        const Shows = ({ shows }) => {
+            const isSingle = shows.length === 1;
+            const [revealedStates, setRevealedStates] = useState({});
+
+            const handleGuessRate = (showId) => {
+                if (!revealedStates[showId]) {
+                    if (window.confetti) {
+                        window.confetti({
+                            particleCount: 150,
+                            spread: 70,
+                            origin: { y: 0.6 },
+                            colors: ['#006b3f', '#ce1126', '#fcd116']
+                        });
+                    }
+                    setRevealedStates(prev => ({ ...prev, [showId]: true }));
+                }
+            };
+
+            return (
+                <section className="my-12 max-w-7xl mx-auto">
+                    <div className="text-center relative mb-10">
+                        <h2 className="text-3xl font-bold inline-block relative pb-2 uppercase tracking-wide text-white">
+                            Upcoming Shows
+                            <span className="absolute bottom-0 left-1/4 w-1/2 h-[4px] bg-gradient-to-r from-ghanaGreen via-ghanaGold to-ghanaRed rounded-full"></span>
+                        </h2>
+                        <p className="text-gray-400 mt-2 text-sm">Catch Fatao Cantona Live on Stage!</p>
+                    </div>
+                    {shows.length > 0 ? (
+                        <div className={isSingle ? "max-w-2xl mx-auto px-4" : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4"}>
+                            {shows.map((show) => (
+                                <div key={show.id} className={`group bg-glass backdrop-blur-md rounded-2xl overflow-hidden border border-white/10 hover:border-ghanaGold transition-all duration-300 hover:shadow-2xl ${isSingle ? 'transform hover:scale-[1.02]' : 'hover:-translate-y-2'}`}>
+                                    <div className="relative aspect-[3/4] overflow-hidden bg-black/40">
+                                        <img 
+                                            src={show.flyerUrl} 
+                                            alt={show.title} 
+                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                            onError={(e) => { e.currentTarget.src = 'https://placehold.co/600x800/006b3f/FFF?text=Flyer+Coming+Soon'; }}
+                                        />
+                                        <div className="absolute top-4 right-4 bg-ghanaRed text-white font-bold px-3 py-1 rounded-md shadow-lg text-sm z-10 animate-pulse">FEATURED EVENT</div>
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90"></div>
+                                        <div className="absolute bottom-0 left-0 w-full p-6 sm:p-8">
+                                            <div className="inline-block bg-ghanaGold text-black font-bold px-2 py-1 rounded text-xs mb-2 uppercase tracking-wider">{show.date.split('•')[0]}</div>
+                                            <h3 className={`font-bold text-white mb-2 leading-tight font-fiery ${isSingle ? 'text-3xl sm:text-4xl' : 'text-2xl'}`}>{show.title}</h3>
+                                            <div className="flex flex-col gap-1 text-gray-200 text-sm mb-6">
+                                                <div className="flex items-center"><i className="fas fa-clock mr-2 text-ghanaGold w-5 text-center"></i>{show.date.split('•')[1] || 'Time TBD'}</div>
+                                                <div className="flex items-center"><i className="fas fa-map-marker-alt mr-2 text-ghanaRed w-5 text-center"></i>{show.venue}</div>
+                                            </div>
+                                            <div className="flex gap-3">
+                                                <button onClick={() => handleGuessRate(show.id)} className={`flex-1 text-center font-bold py-3 rounded-xl transition-all duration-300 active:scale-95 border border-white/10 backdrop-blur-sm ${revealedStates[show.id] ? 'bg-ghanaGold text-black shadow-[0_0_20px_rgba(252,209,22,0.5)] transform scale-105' : 'bg-white/20 hover:bg-white/30 text-white animate-pulse'}`}>
+                                                    {revealedStates[show.id] ? "It's Freeeee! 🎉" : "Guess Rate ❓"}
+                                                </button>
+                                                {show.ticketLink && show.ticketLink !== '#' && (
+                                                    <a href={show.ticketLink} className="flex-1 flex items-center justify-center text-center bg-ghanaGold hover:bg-yellow-400 text-black font-bold py-3 rounded-xl transition-all active:scale-95 shadow-lg">Details</a>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center p-10 bg-white/5 rounded-xl border border-white/10 mx-4">
+                            <i className="fas fa-calendar-times text-4xl text-gray-600 mb-4"></i>
+                            <p className="text-gray-400 text-lg">No upcoming shows scheduled at the moment.</p>
+                            <p className="text-gray-500 text-sm mt-2">Check back soon for updates!</p>
+                        </div>
+                    )}
+                </section>
+            );
+        };
+
+        const About = () => {
+            return (
+                <div className="max-w-7xl mx-auto pt-8 animate-fade-in">
+                    <div className="text-center mb-10">
+                        <h2 className="text-3xl font-bold mb-4 inline-block relative">
+                            About The Artist
+                            <div className="h-1 w-1/2 bg-ghanaGold absolute -bottom-2 left-1/4 rounded-full"></div>
+                        </h2>
+                    </div>
+                    <div className="bg-glass backdrop-blur-md rounded-2xl p-6 sm:p-10 border border-white/10 shadow-2xl">
+                        <div className="flex flex-col md:flex-row gap-8 items-center mb-8">
+                            <div className="w-full md:w-1/3 flex justify-center">
+                                <div className="relative">
+                                    <img src={PROFILE.image} alt="Fatao Cantona" className="w-48 h-48 object-cover rounded-2xl border-2 border-ghanaGold shadow-lg rotate-3" />
+                                    <div className="absolute -bottom-3 -right-3 bg-ghanaRed text-white px-3 py-1 rounded-lg text-xs font-bold shadow-md">GHANA</div>
+                                </div>
+                            </div>
+                            <div className="w-full md:w-2/3 text-center md:text-left">
+                                <h3 className="text-2xl font-bold text-ghanaGold mb-3">{PROFILE.name}</h3>
+                                <p className="text-gray-300 leading-relaxed text-lg mb-4">{ABOUT_TEXT.intro}</p>
+                            </div>
+                        </div>
+                        <div className="space-y-6 text-gray-300 leading-relaxed">
+                            <div>
+                                <h4 className="text-white font-bold text-xl mb-2 flex items-center gap-2"><i className="fas fa-history text-ghanaRed"></i> The Journey</h4>
+                                <p>{ABOUT_TEXT.bio}</p>
+                            </div>
+                            <div className="bg-white/5 p-5 rounded-xl border-l-4 border-ghanaGreen">
+                                <h4 className="text-white font-bold text-lg mb-2">My Mission</h4>
+                                <p className="italic text-gray-400">"{ABOUT_TEXT.mission}"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const Contact = () => {
+            return (
+                <div className="max-w-7xl mx-auto pt-8 animate-fade-in">
+                    <div className="text-center mb-10">
+                        <h2 className="text-3xl font-bold mb-2">Contact & Booking</h2>
+                        <p className="text-gray-400">Get in touch for features, shows, and interviews.</p>
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-6 mb-10">
+                        <div className="bg-glass backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:border-ghanaGold transition-colors">
+                            <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-ghanaGold"><i className="fas fa-address-card"></i> Management</h3>
+                            <div className="space-y-6">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-ghanaRed shrink-0"><i className="fas fa-envelope"></i></div>
+                                    <div>
+                                        <div className="text-sm text-gray-400 mb-1">Email For Bookings</div>
+                                        <a href={`mailto:${CONTACT_INFO.email}`} className="text-white font-medium hover:text-ghanaGold break-all">{CONTACT_INFO.email}</a>
+                                    </div>
+                                </div>
+                                <div className="flex items-start gap-4">
+                                    <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-ghanaGreen shrink-0"><i className="fab fa-whatsapp"></i></div>
+                                    <div>
+                                        <div className="text-sm text-gray-400 mb-1">WhatsApp / Phone</div>
+                                        <a href={CONTACT_INFO.whatsapp} target="_blank" rel="noreferrer" className="text-white font-medium hover:text-ghanaGold">{CONTACT_INFO.phone}</a>
+                                    </div>
+                                </div>
+                                <div className="flex items-start gap-4">
+                                    <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-ghanaGold shrink-0"><i className="fas fa-map-marker-alt"></i></div>
+                                    <div>
+                                        <div className="text-sm text-gray-400 mb-1">Base Location</div>
+                                        <div className="text-white font-medium">{CONTACT_INFO.location}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="bg-glass backdrop-blur-md rounded-2xl p-6 border border-white/10">
+                            <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-white"><i className="fas fa-paper-plane"></i> Send a Message</h3>
+                            <form className="space-y-4" action={`mailto:${CONTACT_INFO.email}`} method="post" encType="text/plain">
+                                <div>
+                                    <label className="block text-xs uppercase text-gray-400 mb-1">Name</label>
+                                    <input type="text" className="w-full bg-black/30 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-ghanaGold transition-colors" placeholder="Your Name" />
+                                </div>
+                                <div>
+                                    <label className="block text-xs uppercase text-gray-400 mb-1">Subject</label>
+                                    <select className="w-full bg-black/30 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-ghanaGold transition-colors">
+                                        <option>Booking Inquiry</option>
+                                        <option>Feature Request</option>
+                                        <option>Press / Interview</option>
+                                        <option>Fan Mail</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-xs uppercase text-gray-400 mb-1">Message</label>
+                                    <textarea rows={4} className="w-full bg-black/30 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-ghanaGold transition-colors" placeholder="How can we work together?"></textarea>
+                                </div>
+                                <button type="submit" className="w-full bg-gradient-to-r from-ghanaGreen to-ghanaGreen/80 hover:from-ghanaGreen hover:to-white/20 text-white font-bold py-3 rounded-lg shadow-lg transition-all transform hover:-translate-y-1 active:scale-95 duration-200">Send Email</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div className="text-center mt-12">
+                        <h3 className="text-lg font-medium mb-6">Connect on Social Media</h3>
+                        <div className="flex flex-wrap justify-center gap-4">
+                            {SOCIAL_LINKS.filter(l => !['Email', 'WhatsApp'].includes(l.platform)).map((link, idx) => (
+                                <a key={idx} href={link.url} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-5 py-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-ghanaGold transition-all active:scale-95 duration-200">
+                                    <i className={`${link.iconClass} text-ghanaGold`}></i><span>{link.platform}</span>
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const Donate = () => {
+            const [amount, setAmount] = useState('');
+            const [name, setName] = useState('');
+            const [network, setNetwork] = useState('MTN');
+            const [step, setStep] = useState(1);
+            const [copied, setCopied] = useState(false);
+            const cleanMomoNumber = "0547077779"; 
+            const momoName = "Fatao Cantona";
+
+            const handleMomoSubmit = (e) => {
+                e.preventDefault();
+                if (!amount) return;
+                setStep(2);
+            };
+
+            const handleCopyNumber = () => {
+                navigator.clipboard.writeText(cleanMomoNumber);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+            };
+
+            const handleSentConfirm = () => {
+                const subject = `Donation Sent: ₵${amount} from ${name || 'Fan'}`;
+                const body = `Hello Fatao,\n\nI have just sent a Mobile Money donation to support your music.\n\n--- Transaction Details ---\nAmount: ₵${amount}\nNetwork: ${network}\nSender Name: ${name || 'Anonymous'}\n\nPlease check your wallet.\n\nKeep up the great work!`;
+                window.location.href = `mailto:${CONTACT_INFO.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                setStep(3);
+            };
+
+            return (
+                <div className="max-w-5xl mx-auto pt-8 animate-fade-in">
+                    <div className="text-center mb-10">
+                        <h2 className="text-3xl font-bold mb-3">Support The Movement</h2>
+                        <p className="text-gray-400">Make a secure donation directly via Mobile Money.</p>
+                    </div>
+                    <div className="bg-glass backdrop-blur-md rounded-2xl border border-white/10 overflow-hidden shadow-2xl relative">
+                        <div className="h-1 w-full bg-ghanaGold"></div>
+                        <div className="p-6 sm:p-8">
+                            {step === 1 && (
+                                <form onSubmit={handleMomoSubmit} className="space-y-5 max-w-2xl mx-auto">
+                                    <div className="text-center mb-6">
+                                        <div className="inline-block p-3 rounded-full bg-ghanaGold/10 text-ghanaGold mb-2 text-2xl"><i className="fas fa-hand-holding-dollar"></i></div>
+                                        <h3 className="text-xl font-bold text-white">Make a Donation</h3>
+                                        <p className="text-sm text-gray-400">Secure Mobile Money Transfer</p>
+                                    </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-xs uppercase text-gray-500 mb-1 font-bold">Your Name (Optional)</label>
+                                            <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-darkBg border border-white/10 rounded-lg p-3 text-white focus:border-ghanaGold outline-none transition-colors" placeholder="Kwame..." />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs uppercase text-gray-500 mb-1 font-bold">Your Network</label>
+                                            <select value={network} onChange={(e) => setNetwork(e.target.value)} className="w-full bg-darkBg border border-white/10 rounded-lg p-3 text-white focus:border-ghanaGold outline-none transition-colors appearance-none">
+                                                <option>MTN Mobile Money</option>
+                                                <option>Telecel Cash (Vodafone)</option>
+                                                <option>AirtelTigo Money</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs uppercase text-gray-500 mb-1 font-bold">Amount (GHS)</label>
+                                        <div className="relative">
+                                            <span className="absolute left-3 top-3 text-gray-400 font-bold">₵</span>
+                                            <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} className="w-full bg-darkBg border border-white/10 rounded-lg p-3 pl-8 text-white focus:border-ghanaGold outline-none transition-colors font-bold text-lg" placeholder="0.00" required min="1" />
+                                        </div>
+                                    </div>
+                                    <button type="submit" className="w-full bg-gradient-to-r from-ghanaGreen to-[#004d2c] text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-green-900/50 transition-all transform hover:-translate-y-1 active:scale-95 duration-200 flex items-center justify-center gap-2 mt-4"><span>Proceed</span> <i className="fas fa-arrow-right"></i></button>
+                                </form>
+                            )}
+                            {step === 2 && (
+                                <div className="animate-fade-in max-w-2xl mx-auto">
+                                    <div className="text-center mb-6">
+                                        <div className="w-16 h-16 bg-ghanaGold/20 text-ghanaGold rounded-full flex items-center justify-center text-3xl mx-auto mb-3"><i className="fas fa-info-circle"></i></div>
+                                        <h3 className="text-xl font-bold text-white">Payment Details</h3>
+                                        <p className="text-gray-400 text-sm">Please send exactly <strong className="text-white">₵{amount}</strong> to:</p>
+                                    </div>
+                                    <div className="bg-white/5 rounded-xl p-6 mb-6 border border-white/10 relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 bg-ghanaGold text-black text-[10px] font-bold px-2 py-1 rounded-bl-lg">MTN MoMo</div>
+                                        <div className="text-center">
+                                            <div className="text-sm text-gray-400 uppercase tracking-widest mb-1">Number</div>
+                                            <div className="flex items-center justify-center gap-3 mb-4">
+                                                <span className="text-3xl font-mono font-bold text-white tracking-wider">{cleanMomoNumber}</span>
+                                                <button onClick={handleCopyNumber} className="bg-white/10 hover:bg-white/20 p-2 rounded-lg text-ghanaGold transition-all active:scale-95" title="Copy Number"><i className={`fas ${copied ? 'fa-check' : 'fa-copy'}`}></i></button>
+                                            </div>
+                                            <div className="flex justify-between items-center border-t border-white/10 pt-4 text-sm">
+                                                <span className="text-gray-400">Account Name:</span><span className="font-bold text-white">{momoName}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="bg-darkBg/50 rounded-lg p-4 mb-6 text-sm text-gray-300 border border-white/5">
+                                        <h4 className="font-bold text-white mb-2 flex items-center gap-2"><i className="fas fa-list-ol text-ghanaGreen"></i> Instructions:</h4>
+                                        <ol className="list-decimal list-inside space-y-1 ml-1">
+                                            <li>Dial <strong>*170#</strong> (or your network's code)</li>
+                                            <li>Select <strong>Transfer Money</strong></li>
+                                            <li>Enter Number: <strong>{cleanMomoNumber}</strong></li>
+                                            <li>Confirm Name: <strong>{momoName}</strong></li>
+                                            <li>Enter Amount: <strong>₵{amount}</strong></li>
+                                        </ol>
+                                    </div>
+                                    <div className="flex gap-3">
+                                        <button onClick={() => setStep(1)} className="flex-1 py-3 rounded-lg border border-white/10 hover:bg-white/5 text-gray-300 font-medium transition-all active:scale-95 duration-200">Back</button>
+                                        <button onClick={handleSentConfirm} className="flex-1 py-3 rounded-lg bg-green-700 text-white font-bold hover:bg-green-600 transition-all shadow-lg active:scale-95 duration-200 flex items-center justify-center gap-2"><i className="fas fa-paper-plane"></i> I've Sent It</button>
+                                    </div>
+                                </div>
+                            )}
+                            {step === 3 && (
+                                <div className="animate-fade-in text-center py-4">
+                                    <div className="w-20 h-20 bg-ghanaGreen rounded-full flex items-center justify-center text-4xl text-white mx-auto mb-6 shadow-xl shadow-green-900/40 animate-bounce-short"><i className="fas fa-check"></i></div>
+                                    <h3 className="text-2xl font-bold text-white mb-2">Medaase! 🙏</h3>
+                                    <p className="text-ghanaGold font-medium text-lg mb-4">Thank you for your support.</p>
+                                    <p className="text-gray-400 text-sm mb-8 leading-relaxed max-w-sm mx-auto">I've received your notification for <strong>₵{amount}</strong>. Your contribution helps keep the music alive!</p>
+                                    <button onClick={() => { setAmount(''); setName(''); setStep(1); }} className="w-full bg-white/10 hover:bg-white/20 text-white font-bold py-3 rounded-xl border border-white/10 transition-all active:scale-95 duration-200">Make Another Donation</button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const Legal = ({ type }) => {
+            const isTerms = type === 'terms';
+            const title = isTerms ? 'Terms of Service' : 'Privacy Policy';
+            const date = 'October 24, 2023';
+
+            return (
+                <div className="max-w-7xl mx-auto pt-4 pb-12 animate-fade-in text-left">
+                    <div className="mb-8 border-b border-white/10 pb-6">
+                        <h2 className="text-3xl font-bold mb-2 text-white">{title}</h2>
+                        <p className="text-gray-500 text-sm">Last Updated: {date}</p>
+                    </div>
+                    <div className="space-y-8 text-gray-300 leading-relaxed font-light">
+                        {isTerms ? (
+                            <>
+                                <section><h3 className="text-xl font-bold text-ghanaGold mb-3">1. Acceptance of Terms</h3><p>By accessing and using the official website of Fatao Cantona ("the Website"), you accept and agree to be bound by the terms and provision of this agreement.</p></section>
+                                <section><h3 className="text-xl font-bold text-ghanaGold mb-3">2. Intellectual Property</h3><p>All content on this site, including but not limited to audio, video, images, and text, is the property of Fatao Cantona and protected by international copyright laws. Unauthorized use or distribution is strictly prohibited.</p></section>
+                                <section><h3 className="text-xl font-bold text-ghanaGold mb-3">3. User Conduct</h3><p>Users agree not to use the Website for any unlawful purpose or any purpose prohibited by these Terms. You agree not to damage, disable, or impair the Website.</p></section>
+                                <section><h3 className="text-xl font-bold text-ghanaGold mb-3">4. Limitation of Liability</h3><p>Fatao Cantona and his management team shall not be liable for any damages whatsoever resulting from your use or inability to use this website.</p></section>
+                            </>
+                        ) : (
+                            <>
+                                <section><h3 className="text-xl font-bold text-ghanaGold mb-3">1. Information Collection</h3><p>We respect your privacy. This website primarily serves as a portfolio and does not actively collect personal data unless you voluntarily provide it through email contact or third-party platforms linked herein (e.g., Spotify, YouTube).</p></section>
+                                <section><h3 className="text-xl font-bold text-ghanaGold mb-3">2. Third-Party Links</h3><p>Our website contains links to other websites (Spotify, Apple Music, Social Media). We are not responsible for the privacy practices or content of these third-party sites.</p></section>
+                                <section><h3 className="text-xl font-bold text-ghanaGold mb-3">3. Cookies</h3><p>This website may use standard cookies to enhance user experience. You can choose to disable cookies through your browser settings.</p></section>
+                                <section><h3 className="text-xl font-bold text-ghanaGold mb-3">4. Contact Information</h3><p>If you have questions about this policy, please contact us at fataocantona9@gmail.com.</p></section>
+                            </>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        const Footer = ({ setView }) => {
+            return (
+                <footer className="text-center pt-8 pb-8 mt-10 border-t border-white/10 text-gray-400 text-sm max-w-7xl mx-auto">
+                    <div className="flex justify-center gap-4 mb-8">
+                        {FOOTER_SOCIALS.map((social, index) => (
+                            <a key={index} href={social.url} target="_blank" rel="noreferrer" className="w-[50px] h-[50px] rounded-full bg-glass border border-white/10 flex items-center justify-center text-xl text-gray-100 transition-all duration-300 hover:-translate-y-1 hover:bg-ghanaGreen hover:text-white hover:shadow-lg hover:border-transparent">
+                                <i className={social.icon}></i>
+                            </a>
+                        ))}
+                    </div>
+                    <p className="mb-4">&copy; 2023 Fatao Cantona. All rights reserved. Proudly Ghanaian.</p>
+                    <div className="flex justify-center gap-5 flex-wrap px-4">
+                        <button onClick={() => setView('privacy')} className="hover:text-ghanaGold transition-colors bg-transparent border-none cursor-pointer">Privacy Policy</button>
+                        <button onClick={() => setView('terms')} className="hover:text-ghanaGold transition-colors bg-transparent border-none cursor-pointer">Terms of Service</button>
+                        <button onClick={() => setView('contact')} className="hover:text-ghanaGold transition-colors bg-transparent border-none cursor-pointer">Contact & Booking</button>
+                        <a href="https://distrokid.com/product/distrokid/plans-and-pricing-2?utm_source=google&utm_medium=cpc&utm_campaign=&utm_content=&utm_term=distrokid&device=c&kw_matchtype=e&network=g&gad_source=1&gad_campaignid=23270722555&gbraid=0AAAAADfMxXsTQuZBKHgbxbdw3XmNOMsK-&gclid=CjwKCAiA55rJBhByEiwAFkY1QM91Kx8zVYg3JIklQ9xmfeAO6VYxtQPBaid_DDxsDMpn7ifEtSeJNhoC5dsQAvD_BwE" target="_blank" rel="noreferrer" className="hover:text-ghanaGold transition-colors">Distributed by DistroKid</a>
+                    </div>
+                </footer>
+            );
+        };
+
+        const App = () => {
+            const [currentView, setCurrentView] = useState('home');
+            const [loading, setLoading] = useState(true);
+
+            useEffect(() => {
+                const timer = setTimeout(() => { setLoading(false); }, 3500);
+                return () => clearTimeout(timer);
+            }, []);
+
+            useEffect(() => {
+                if (!loading) window.scrollTo(0, 0);
+            }, [currentView, loading]);
+
+            const renderContent = () => {
+                switch (currentView) {
+                    case 'about': return <About />;
+                    case 'contact': return <Contact />;
+                    case 'donate': return <Donate />;
+                    case 'terms': return <Legal type="terms" />;
+                    case 'privacy': return <Legal type="privacy" />;
+                    case 'home':
+                    default:
+                        return (
+                            <div className="animate-fade-in">
+                                <Header />
+                                <div className="h-[5px] bg-gradient-to-r from-ghanaGreen via-ghanaGold to-ghanaRed my-8 rounded-full max-w-7xl mx-auto"></div>
+                                <MusicPlayer />
+                                <Shows shows={UPCOMING_SHOWS} />
+                                <LinkSection title="Stream My Music" links={MUSIC_LINKS} />
+                                <LinkSection title="Connect With Me" links={SOCIAL_LINKS} />
+                            </div>
+                        );
+                }
+            };
+
+            if (loading) {
+                return (
+                    <div className="fixed inset-0 bg-darkerBg z-[100] flex flex-col items-center justify-center overflow-hidden">
+                        <div className="relative">
+                            <div className="absolute inset-0 bg-orange-500 blur-[80px] opacity-20 rounded-full animate-pulse"></div>
+                            <h1 className="relative text-4xl sm:text-6xl md:text-7xl font-fiery bg-gradient-to-b from-[#ffbf00] via-[#ff4500] to-[#ff0000] bg-clip-text text-transparent text-center px-4 animate-pulse scale-up-center">{PROFILE.name}</h1>
+                            <p className="text-gray-500 text-center mt-4 tracking-[0.5em] text-sm uppercase animate-fade-in-delayed">Official Website</p>
+                        </div>
+                        <div className="mt-12 flex gap-2">
+                            <div className="w-3 h-3 rounded-full bg-ghanaGreen animate-bounce" style={{ animationDelay: '0s' }}></div>
+                            <div className="w-3 h-3 rounded-full bg-ghanaGold animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                            <div className="w-3 h-3 rounded-full bg-ghanaRed animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen overflow-x-hidden font-sans pb-10">
+                    <Navbar currentView={currentView} setView={setCurrentView} />
+                    <div className="h-16 mb-4"></div>
+                    <div className="container mx-auto px-5 max-w-7xl">
+                        {renderContent()}
+                        <Footer setView={setCurrentView} />
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
 </body>
 </html>
