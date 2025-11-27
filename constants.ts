@@ -6,8 +6,8 @@ export const PROFILE: ProfileData = {
   tagline: "Ghanaian Rapper & Afrobeat Artist",
   location: "Techiman, Bono East, Ghana",
   image: "https://yt3.googleusercontent.com/ytc/AIdro_n6czAJLhZEsN6IifapwtZiycxoo43PHRE_tR-3FOjtzg=s900-c-k-c0x00ffffff-no-rj",
-  // Using Google Content CDN (lh3) for maximum reliability across browsers
-  coverImage: "https://lh3.googleusercontent.com/d/1OXqITsHC47GDUADr7u1wzIXPqNCYO7o4=w2000",
+  // Using Cloudinary CDN for maximum reliability
+  coverImage: "https://res.cloudinary.com/dklev9xbf/image/upload/v1764280240/488822490_1215780370053781_1612404062156335069_n_csduyh.jpg",
   flagImage: "https://www.citypng.com/public/uploads/preview/ghana-round-metal-framed-flag-icon-png-733961694955658eoaq03f93z.png",
   stats: [
     { value: "15K+", label: "Streams" },
@@ -36,8 +36,8 @@ export const UPCOMING_SHOWS: ShowItem[] = [
     title: 'Culture & Heritage Fest',
     date: 'Sat, 20th Dec 2025 • 10:00 AM',
     venue: 'Techiman - Astroturf',
-    // Using Google Content CDN (lh3) for maximum reliability
-    flyerUrl: 'https://lh3.googleusercontent.com/d/1U39_LTl0HBbRf3Y9GShXDwL32Rei6N2d=w1000', 
+    // Using Cloudinary CDN for maximum reliability
+    flyerUrl: 'https://res.cloudinary.com/dklev9xbf/image/upload/v1764280187/artist_night_ah1oxo.jpg', 
     ticketLink: '#' 
   }
 ];

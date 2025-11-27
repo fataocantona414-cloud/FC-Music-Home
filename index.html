@@ -10,16 +10,16 @@
     <!-- Open Graph / Facebook / WhatsApp Meta Tags -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://fataocantona.com/">
-    <meta property="og:title" content="Fatao Cantona - Official Website">
+    <meta property="og:title" content="Fatao Cantona - Only Freemen">
     <meta property="og:description" content="Official artist portfolio for Ghanaian Rapper & Afrobeat Artist Fatao Cantona. Stream music, check upcoming shows, and support the movement.">
     <!-- Using the high-res thumbnail link for social preview -->
-    <meta property="og:image" content="https://lh3.googleusercontent.com/d/1OXqITsHC47GDUADr7u1wzIXPqNCYO7o4=w2000">
+    <meta property="og:image" content="https://res.cloudinary.com/dklev9xbf/image/upload/v1764280240/488822490_1215780370053781_1612404062156335069_n_csduyh.jpg">
 
     <!-- Twitter Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Fatao Cantona - Official Website">
+    <meta name="twitter:title" content="Fatao Cantona - Only Freemen">
     <meta name="twitter:description" content="Official artist portfolio for Ghanaian Rapper & Afrobeat Artist Fatao Cantona.">
-    <meta name="twitter:image" content="https://lh3.googleusercontent.com/d/1OXqITsHC47GDUADr7u1wzIXPqNCYO7o4=w2000">
+    <meta name="twitter:image" content="https://res.cloudinary.com/dklev9xbf/image/upload/v1764280240/488822490_1215780370053781_1612404062156335069_n_csduyh.jpg">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -108,9 +108,9 @@
 <script type="importmap">
 {
   "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
     "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+    "react": "https://aistudiocdn.com/react@^19.2.0"
   }
 }
 </script>
@@ -127,8 +127,8 @@
             tagline: "Ghanaian Rapper & Afrobeat Artist",
             location: "Techiman, Bono East, Ghana",
             image: "https://yt3.googleusercontent.com/ytc/AIdro_n6czAJLhZEsN6IifapwtZiycxoo43PHRE_tR-3FOjtzg=s900-c-k-c0x00ffffff-no-rj",
-            // Using Google Content CDN for reliable image loading
-            coverImage: "https://lh3.googleusercontent.com/d/1OXqITsHC47GDUADr7u1wzIXPqNCYO7o4=w2000",
+            // Using Cloudinary CDN for reliable image loading
+            coverImage: "https://res.cloudinary.com/dklev9xbf/image/upload/v1764280240/488822490_1215780370053781_1612404062156335069_n_csduyh.jpg",
             flagImage: "https://www.citypng.com/public/uploads/preview/ghana-round-metal-framed-flag-icon-png-733961694955658eoaq03f93z.png",
             stats: [
                 { value: "15K+", label: "Streams" },
@@ -156,8 +156,8 @@
                 title: 'Culture & Heritage Fest',
                 date: 'Sat, 20th Dec 2025 • 10:00 AM',
                 venue: 'Techiman - Astroturf',
-                // Using Google Content CDN for reliable image loading
-                flyerUrl: 'https://lh3.googleusercontent.com/d/1U39_LTl0HBbRf3Y9GShXDwL32Rei6N2d=w1000', 
+                // Using Cloudinary CDN for reliable image loading
+                flyerUrl: 'https://res.cloudinary.com/dklev9xbf/image/upload/v1764280187/artist_night_ah1oxo.jpg', 
                 ticketLink: '#' 
             }
         ];
@@ -253,9 +253,10 @@
                         <img 
                             src={PROFILE.coverImage} 
                             alt="Cover" 
+                            referrerPolicy="no-referrer"
                             className="w-full h-full object-cover object-top transition-transform duration-[10s] ease-in-out group-hover:scale-110"
                             onError={(e) => {
-                                // Fallback to a nice gradient if the image link fails (no sea picture)
+                                // Fallback to a nice gradient if the image link fails
                                 e.currentTarget.style.display = 'none';
                                 if (e.currentTarget.parentElement) {
                                   e.currentTarget.parentElement.classList.add('bg-gradient-to-r', 'from-ghanaGreen', 'via-black', 'to-ghanaRed');
@@ -422,6 +423,7 @@
                                         <img 
                                             src={show.flyerUrl} 
                                             alt={show.title} 
+                                            referrerPolicy="no-referrer"
                                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                                             onError={(e) => { 
                                                 // Fallback to a placeholder if drive link fails
