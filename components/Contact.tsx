@@ -32,6 +32,14 @@ ${message}`;
     
     // Open default email client
     window.location.href = mailtoUrl;
+
+    // Reset Form Data immediately
+    setFormData({
+      name: '',
+      email: '',
+      subject: 'Booking Inquiry',
+      message: ''
+    });
   };
 
   return (

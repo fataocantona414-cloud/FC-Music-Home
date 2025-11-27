@@ -12,13 +12,13 @@
     <meta property="og:title" content="Fatao Cantona - Official Website">
     <meta property="og:description" content="Official artist portfolio for Ghanaian Rapper & Afrobeat Artist Fatao Cantona. Stream music, check upcoming shows, and support the movement.">
     <!-- Using the high-res thumbnail link for social preview -->
-    <meta property="og:image" content="https://drive.google.com/thumbnail?id=1OXqITsHC47GDUADr7u1wzIXPqNCYO7o4&sz=w2000">
+    <meta property="og:image" content="https://drive.google.com/uc?export=view&id=1OXqITsHC47GDUADr7u1wzIXPqNCYO7o4">
 
     <!-- Twitter Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Fatao Cantona - Official Website">
     <meta name="twitter:description" content="Official artist portfolio for Ghanaian Rapper & Afrobeat Artist Fatao Cantona.">
-    <meta name="twitter:image" content="https://drive.google.com/thumbnail?id=1OXqITsHC47GDUADr7u1wzIXPqNCYO7o4&sz=w2000">
+    <meta name="twitter:image" content="https://drive.google.com/uc?export=view&id=1OXqITsHC47GDUADr7u1wzIXPqNCYO7o4">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -126,8 +126,8 @@
             tagline: "Ghanaian Rapper & Afrobeat Artist",
             location: "Techiman, Bono East, Ghana",
             image: "https://yt3.googleusercontent.com/ytc/AIdro_n6czAJLhZEsN6IifapwtZiycxoo43PHRE_tR-3FOjtzg=s900-c-k-c0x00ffffff-no-rj",
-            // Using Google Drive Thumbnail endpoint for maximum reliability
-            coverImage: "https://drive.google.com/thumbnail?id=1OXqITsHC47GDUADr7u1wzIXPqNCYO7o4&sz=w2000",
+            // Using Google Drive Direct Link (export=view)
+            coverImage: "https://drive.google.com/uc?export=view&id=1OXqITsHC47GDUADr7u1wzIXPqNCYO7o4",
             flagImage: "https://www.citypng.com/public/uploads/preview/ghana-round-metal-framed-flag-icon-png-733961694955658eoaq03f93z.png",
             stats: [
                 { value: "15K+", label: "Streams" },
@@ -155,8 +155,8 @@
                 title: 'Culture & Heritage Fest',
                 date: 'Sat, 20th Dec 2025 • 10:00 AM',
                 venue: 'Techiman - Astroturf',
-                // Using Google Drive Thumbnail endpoint for reliability
-                flyerUrl: 'https://drive.google.com/thumbnail?id=1U39_LTl0HBbRf3Y9GShXDwL32Rei6N2d&sz=w1000', 
+                // Using Google Drive Direct Link (export=view)
+                flyerUrl: 'https://drive.google.com/uc?export=view&id=1U39_LTl0HBbRf3Y9GShXDwL32Rei6N2d', 
                 ticketLink: '#' 
             }
         ];
@@ -254,8 +254,12 @@
                             alt="Cover" 
                             className="w-full h-full object-cover object-top transition-transform duration-[10s] ease-in-out group-hover:scale-110"
                             onError={(e) => {
-                                // Better fallback to a generic concert/dark image if drive link fails
-                                e.currentTarget.src = 'https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=2070&auto=format&fit=crop';
+                                // Fallback to a nice gradient if the image link fails (no sea picture)
+                                e.currentTarget.style.display = 'none';
+                                if (e.currentTarget.parentElement) {
+                                  e.currentTarget.parentElement.classList.add('bg-gradient-to-r', 'from-ghanaGreen', 'via-black', 'to-ghanaRed');
+                                  e.currentTarget.parentElement.style.backgroundImage = 'linear-gradient(to right, #006b3f, #0a0a0a, #ce1126)';
+                                }
                             }}
                         />
                     </div>
@@ -523,6 +527,14 @@ ${message}`;
                 
                 // Open default email client
                 window.location.href = mailtoUrl;
+
+                // Reset Form Data immediately after trigger
+                setFormData({
+                    name: '',
+                    email: '',
+                    subject: 'Booking Inquiry',
+                    message: ''
+                });
             };
 
             return (

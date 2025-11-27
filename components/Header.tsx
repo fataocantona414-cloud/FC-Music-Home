@@ -13,7 +13,7 @@ const Header: React.FC = () => {
           alt="Cover" 
           className="w-full h-full object-cover object-top transition-transform duration-[10s] ease-in-out group-hover:scale-110"
           onError={(e) => {
-             // Fallback to a nice gradient if the image link fails
+             // Fallback to a nice gradient if the image link fails (no sea picture)
              e.currentTarget.style.display = 'none';
              if (e.currentTarget.parentElement) {
                e.currentTarget.parentElement.classList.add('bg-gradient-to-r', 'from-ghanaGreen', 'via-black', 'to-ghanaRed');
