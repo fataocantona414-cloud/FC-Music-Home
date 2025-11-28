@@ -57,6 +57,13 @@ export const SONGS: Song[] = [
     artist: 'Fatao Cantona',
     url: 'https://res.cloudinary.com/dklev9xbf/video/upload/v1764345820/Wossop_Mixed_By_Eric_Syte_by_Fatao_Cantona_EF-CEE_-_Listen_on_Audiomack_b2t8ho.mp4',
     coverArt: 'https://res.cloudinary.com/dklev9xbf/image/upload/v1764345803/7193178b98_thadz6.webp'
+  },
+  {
+    id: '3',
+    title: 'Fall On Me (feat. Ef-Cee)',
+    artist: 'Fatao Cantona',
+    url: 'https://res.cloudinary.com/dklev9xbf/video/upload/v1764348043/Fall_On_Me_by_Fatao_Cantona_EF-CEE_-_Listen_on_Audiomack_eicybx.mp4',
+    coverArt: 'https://res.cloudinary.com/dklev9xbf/image/upload/v1764348038/1af6b24cf7_khful6.webp'
   }
 ];
 
