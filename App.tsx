@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import MusicPlayer from './components/MusicPlayer';
@@ -12,9 +13,123 @@ import Shows from './components/Shows';
 import { MUSIC_LINKS, SOCIAL_LINKS, PROFILE, UPCOMING_SHOWS } from './constants';
 import { ViewType } from './types';
 
+// Define EmailPopup locally for the App component
+const EmailPopup = ({ isVisible, onClose }: { isVisible: boolean; onClose: () => void }) => {
+    const [submissionState, setSubmissionState] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle'); 
+    const FORMSPREE_ID = "mgvjpeow"; // Real Formspree ID
+
+    if (!isVisible) return null;
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setSubmissionState('submitting');
+        
+        const form = e.currentTarget;
+        const formData = new FormData(form);
+        
+        // Convert formData to a JSON object for safer transmission
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+            const response = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                setSubmissionState('success');
+                setTimeout(() => onClose(), 2000);
+            } else {
+                // Log the actual error from Formspree for debugging
+                const errorData = await response.json();
+                console.error("Formspree Error:", errorData);
+                setSubmissionState('error');
+            }
+        } catch (error) {
+            console.error("Network Error:", error);
+            setSubmissionState('error');
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 z-[101] bg-black/80 flex items-center justify-center p-4 animate-fade-in-quick">
+            <div className="bg-darkerBg rounded-xl border border-ghanaGold/50 shadow-2xl p-6 w-full max-w-sm relative transform scale-up-center">
+                <button onClick={onClose} className="absolute top-3 right-3 text-gray-400 hover:text-white transition-colors text-xl">
+                    <i className="fas fa-times-circle"></i>
+                </button>
+                
+                <div className="text-center mb-6">
+                    <i className="fas fa-envelope-open-text text-4xl text-ghanaGold mb-3 animate-wiggle"></i>
+                    <h3 className="text-2xl font-bold text-white mb-2">Never Miss a Drop!</h3>
+                    <ul className="text-left text-gray-300 text-sm space-y-3 mb-4 bg-white/5 p-4 rounded-lg border border-white/5">
+                        <li className="flex items-center gap-3">
+                            <i className="fas fa-music text-ghanaGold"></i> 
+                            <span>Latest Releases & Videos</span>
+                        </li>
+                        <li className="flex items-center gap-3">
+                            <i className="fas fa-ticket text-ghanaRed"></i> 
+                            <span>Upcoming Shows & Tickets</span>
+                        </li>
+                        <li className="flex items-center gap-3">
+                            <i className="fas fa-star text-ghanaGreen"></i> 
+                            <span>Exclusive Behind-the-Scenes</span>
+                        </li>
+                    </ul>
+                </div>
+
+                {submissionState === 'success' ? (
+                    <div className="text-center py-4 bg-ghanaGreen/20 rounded-lg border border-ghanaGreen">
+                        <i className="fas fa-check-circle text-3xl text-ghanaGreen mb-2"></i>
+                        <p className="text-white font-bold">Subscribed Successfully!</p>
+                    </div>
+                ) : (
+                    <form className="space-y-4" onSubmit={handleSubmit}>
+                        <input 
+                            type="email" 
+                            name="email"
+                            placeholder="Enter your email address..." 
+                            className="w-full bg-black/30 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-ghanaGold transition-colors" 
+                            required 
+                            disabled={submissionState === 'submitting'}
+                        />
+                        <button 
+                            type="submit" 
+                            className={`w-full font-bold py-3 rounded-lg shadow-lg transition-all active:scale-95 duration-200 
+                                ${submissionState === 'submitting' ? 'bg-gray-600 cursor-not-allowed' : 'bg-gradient-to-r from-ghanaGold to-ghanaRed text-black hover:shadow-ghanaGold/50'}`}
+                            disabled={submissionState === 'submitting'}
+                        >
+                            {submissionState === 'submitting' ? 'Subscribing...' : 'Subscribe for Free'}
+                        </button>
+                        
+                        {submissionState === 'error' && (
+                            <p className="text-center text-xs text-red-500">Something went wrong. Please try again.</p>
+                        )}
+                        
+                        {/* Not Now Button */}
+                        <button 
+                            type="button" 
+                            onClick={onClose} 
+                            className="w-full text-center text-sm text-gray-500 hover:text-gray-300 transition-colors underline decoration-gray-700 hover:decoration-gray-400 pt-1"
+                        >
+                            Not now, maybe later
+                        </button>
+
+                        <p className="text-center text-xs text-gray-600 pt-2">No spam, just music. Unsubscribe anytime.</p>
+                    </form>
+                )}
+            </div>
+        </div>
+    );
+};
+
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<ViewType>('home');
   const [loading, setLoading] = useState(true);
+  const [showPopup, setShowPopup] = useState(false);
 
   // Initial loading timer
   useEffect(() => {
@@ -30,6 +145,21 @@ const App: React.FC = () => {
       window.scrollTo(0, 0);
     }
   }, [currentView, loading]);
+
+  useEffect(() => {
+    const hasSeenPopup = sessionStorage.getItem('popupSeen');
+    if (!hasSeenPopup) {
+        const timer = setTimeout(() => {
+            setShowPopup(true);
+        }, 1500); 
+        return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
+    sessionStorage.setItem('popupSeen', 'true'); 
+  };
 
   const renderContent = () => {
     switch (currentView) {
@@ -74,7 +204,7 @@ const App: React.FC = () => {
           
           {/* Subtext */}
           <p className="text-gray-500 text-center mt-4 tracking-[0.5em] text-sm uppercase animate-fade-in-delayed">
-            Official Website
+            Only Freemen
           </p>
         </div>
         
@@ -114,6 +244,7 @@ const App: React.FC = () => {
         
         <Footer setView={setCurrentView} />
       </div>
+      <EmailPopup isVisible={showPopup} onClose={handleClosePopup} />
 
       <style>{`
         @keyframes fadeIn {
