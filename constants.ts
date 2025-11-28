@@ -1,5 +1,5 @@
 
-import { LinkItem, ProfileData, ShowItem } from './types';
+import { LinkItem, ProfileData, ShowItem, Song } from './types';
 
 export const PROFILE: ProfileData = {
   name: "Fatao Cantona",
@@ -39,6 +39,24 @@ export const UPCOMING_SHOWS: ShowItem[] = [
     // Using Cloudinary CDN for maximum reliability
     flyerUrl: 'https://res.cloudinary.com/dklev9xbf/image/upload/v1764280187/artist_night_ah1oxo.jpg', 
     ticketLink: '#' 
+  }
+];
+
+// --- NEW SECTION: SONGS ---
+export const SONGS: Song[] = [
+  {
+    id: '1',
+    title: 'Brag (feat. Ef-Cee)',
+    artist: 'Fatao Cantona',
+    url: 'https://res.cloudinary.com/dklev9xbf/video/upload/v1764344714/BRAG_by_Fatao_Cantona_EF-CEE_-_Listen_on_Audiomack_xcmvyw.mp4',
+    coverArt: 'https://res.cloudinary.com/dklev9xbf/image/upload/v1764345283/10796803-1_dj8rip.webp'
+  },
+  {
+    id: '2',
+    title: 'Wossop (feat. Ef-Cee)',
+    artist: 'Fatao Cantona',
+    url: 'https://res.cloudinary.com/dklev9xbf/video/upload/v1764345820/Wossop_Mixed_By_Eric_Syte_by_Fatao_Cantona_EF-CEE_-_Listen_on_Audiomack_b2t8ho.mp4',
+    coverArt: 'https://res.cloudinary.com/dklev9xbf/image/upload/v1764345803/7193178b98_thadz6.webp'
   }
 ];
 

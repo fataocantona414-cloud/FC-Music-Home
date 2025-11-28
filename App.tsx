@@ -10,7 +10,8 @@ import Contact from './components/Contact';
 import Donate from './components/Donate';
 import Legal from './components/Legal';
 import Shows from './components/Shows';
-import { MUSIC_LINKS, SOCIAL_LINKS, PROFILE, UPCOMING_SHOWS } from './constants';
+import AudioPlayer from './components/AudioPlayer'; // Import the new player
+import { MUSIC_LINKS, SOCIAL_LINKS, PROFILE, UPCOMING_SHOWS, SONGS } from './constants'; // Import SONGS
 import { ViewType } from './types';
 
 // Define EmailPopup locally for the App component
@@ -180,7 +181,13 @@ const App: React.FC = () => {
             <Header />
             {/* Ghana Stripe Decorative Element */}
             <div className="h-[5px] bg-gradient-to-r from-ghanaGreen via-ghanaGold to-ghanaRed my-8 rounded-full max-w-7xl mx-auto"></div>
+            
+            {/* NEW: Custom Audio Player for direct MP3s */}
+            <AudioPlayer songs={SONGS} />
+            
+            {/* Existing Spotify Embed */}
             <MusicPlayer />
+            
             <Shows shows={UPCOMING_SHOWS} />
             <LinkSection title="Stream My Music" links={MUSIC_LINKS} />
             <LinkSection title="Connect With Me" links={SOCIAL_LINKS} />

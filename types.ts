@@ -23,6 +23,14 @@ export interface ShowItem {
   ticketLink?: string;
 }
 
+export interface Song {
+  id: string;
+  title: string;
+  artist: string;
+  url: string; // The direct MP3 link
+  coverArt?: string; // Optional specific cover art
+}
+
 export interface ProfileData {
   name: string;
   tagline: string;
