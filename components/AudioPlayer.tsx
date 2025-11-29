@@ -1,4 +1,5 @@
 
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Song } from '../types';
 
@@ -14,7 +15,13 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ songs }) => {
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
   
+  // Tooltip States
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [tooltipTime, setTooltipTime] = useState(0);
+  const [tooltipPos, setTooltipPos] = useState(0);
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const progressBarRef = useRef<HTMLDivElement | null>(null);
   const currentSong = songs[currentTrackIndex];
 
   useEffect(() => {
@@ -113,12 +120,33 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ songs }) => {
     setCurrentTrackIndex((prev) => (prev - 1 + songs.length) % songs.length);
   };
 
-  const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (audioRef.current) {
-      const newTime = Number(e.target.value);
-      audioRef.current.currentTime = newTime;
-      setProgress(newTime);
-    }
+  // Enhanced Progress Bar Handlers
+  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
+      if (audioRef.current && progressBarRef.current) {
+          const rect = progressBarRef.current.getBoundingClientRect();
+          const clickX = e.clientX - rect.left;
+          const width = rect.width;
+          const newTime = (clickX / width) * duration;
+          
+          audioRef.current.currentTime = newTime;
+          setProgress(newTime);
+      }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+      if (progressBarRef.current && duration > 0) {
+          const rect = progressBarRef.current.getBoundingClientRect();
+          const hoverX = e.clientX - rect.left;
+          const width = rect.width;
+          const time = (hoverX / width) * duration;
+          
+          // Clamp values
+          const clampedTime = Math.max(0, Math.min(time, duration));
+          const clampedPos = Math.max(0, Math.min(hoverX, width));
+
+          setTooltipTime(clampedTime);
+          setTooltipPos(clampedPos);
+      }
   };
 
   const formatTime = (time: number) => {
@@ -152,20 +180,64 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ songs }) => {
 
           {/* Controls & Info */}
           <div className="flex-1 w-full">
-            <h3 className="text-2xl font-fiery text-white mb-1 truncate">{currentSong.title}</h3>
-            <p className="text-gray-400 text-sm mb-4">{currentSong.artist}</p>
+            <div className="flex justify-between items-end mb-2">
+                 <div className="overflow-hidden">
+                    <h3 className="text-2xl font-fiery text-white mb-1 truncate">{currentSong.title}</h3>
+                    <p className="text-gray-400 text-sm">{currentSong.artist}</p>
+                 </div>
+                 
+                 {/* VISUALIZER */}
+                 <div className="hidden sm:flex items-end gap-[3px] h-8 pb-1">
+                    {[...Array(12)].map((_, i) => (
+                        <div 
+                            key={i} 
+                            className={`w-1 bg-gradient-to-t from-ghanaGreen via-ghanaGold to-ghanaRed rounded-t-sm ${isPlaying ? 'animate-sound-bar' : 'h-[10%]'}`}
+                            style={{ 
+                                animationDelay: `${Math.random() * 0.5}s`,
+                                animationDuration: `${0.8 + Math.random() * 0.4}s`
+                            }}
+                        ></div>
+                    ))}
+                 </div>
+            </div>
 
-            {/* Progress Bar */}
-            <div className="flex items-center gap-3 text-xs font-mono text-gray-400 mb-4">
+            {/* Enhanced Progress Bar */}
+            <div className="flex items-center gap-3 text-xs font-mono text-gray-400 mb-6">
               <span>{formatTime(progress)}</span>
-              <input 
-                type="range" 
-                min="0" 
-                max={duration || 100} 
-                value={progress} 
-                onChange={handleProgressChange}
-                className="flex-1 h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-ghanaGold hover:accent-white transition-all"
-              />
+              
+              <div 
+                  className="flex-1 relative h-6 flex items-center cursor-pointer group"
+                  ref={progressBarRef}
+                  onClick={handleProgressClick}
+                  onMouseMove={handleMouseMove}
+                  onMouseEnter={() => setShowTooltip(true)}
+                  onMouseLeave={() => setShowTooltip(false)}
+              >
+                  {/* Track Background */}
+                  <div className="absolute inset-x-0 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                      {/* Progress Fill (Ghana Colors) */}
+                      <div 
+                          className="h-full bg-gradient-to-r from-ghanaGreen via-ghanaGold to-ghanaRed relative"
+                          style={{ width: `${duration ? (progress / duration) * 100 : 0}%` }}
+                      ></div>
+                  </div>
+                  
+                  {/* Thumb (Visible on Hover/Drag) */}
+                  <div 
+                      className="absolute h-4 w-4 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.5)] transform -translate-x-1/2 scale-0 group-hover:scale-100 transition-transform duration-150 ease-out"
+                      style={{ left: `${duration ? (progress / duration) * 100 : 0}%` }}
+                  ></div>
+
+                  {/* Tooltip */}
+                  <div 
+                      className={`absolute -top-8 bg-darkBg border border-ghanaGold/30 text-ghanaGold text-xs font-bold px-2 py-1 rounded shadow-lg transform -translate-x-1/2 pointer-events-none transition-opacity duration-200 ${showTooltip ? 'opacity-100' : 'opacity-0'}`}
+                      style={{ left: tooltipPos }}
+                  >
+                      {formatTime(tooltipTime)}
+                      <div className="absolute bottom-[-4px] left-1/2 transform -translate-x-1/2 w-2 h-2 bg-darkBg border-r border-b border-ghanaGold/30 rotate-45"></div>
+                  </div>
+              </div>
+              
               <span>{formatTime(duration)}</span>
             </div>
 
@@ -258,6 +330,15 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ songs }) => {
         @keyframes spin {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
+        }
+        
+        @keyframes soundBar {
+          0% { height: 10%; }
+          50% { height: 100%; }
+          100% { height: 10%; }
+        }
+        .animate-sound-bar {
+          animation: soundBar 1.2s ease-in-out infinite;
         }
       `}</style>
     </div>
