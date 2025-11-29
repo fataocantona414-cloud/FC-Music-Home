@@ -303,20 +303,44 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ songs }) => {
         />
         
         {/* Playlist List (Mobile optimized: scrollable) */}
-        <div className="bg-black/40 border-t border-white/5 p-4 max-h-40 overflow-y-auto relative z-10">
-          <p className="text-xs uppercase text-gray-500 font-bold mb-2">Playlist</p>
+        <div className="bg-black/40 border-t border-white/5 p-4 max-h-56 overflow-y-auto relative z-10 custom-scrollbar">
+          <div className="flex justify-between items-center mb-2">
+             <p className="text-xs uppercase text-gray-500 font-bold">Playlist</p>
+             <span className="text-xs text-gray-600">{songs.length} Tracks</span>
+          </div>
           <ul className="space-y-1">
             {songs.map((song, idx) => (
               <li 
                 key={song.id} 
                 onClick={() => setCurrentTrackIndex(idx)}
-                className={`p-2 rounded-lg flex items-center justify-between cursor-pointer text-sm transition-colors ${currentTrackIndex === idx ? 'bg-white/10 text-ghanaGold' : 'hover:bg-white/5 text-gray-400'}`}
+                className={`
+                   p-3 rounded-lg flex items-center justify-between cursor-pointer text-sm transition-all duration-200 border-l-2
+                   ${currentTrackIndex === idx 
+                      ? 'bg-white/10 border-ghanaGold text-ghanaGold shadow-[inset_0_0_10px_rgba(252,209,22,0.1)] pl-4' 
+                      : 'border-transparent text-gray-400 hover:bg-white/5 hover:text-white hover:border-white/20 hover:pl-4'
+                   }
+                `}
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-xs w-4 opacity-50">{idx + 1}</span>
-                  <span className="truncate max-w-[150px] sm:max-w-xs">{song.title}</span>
+                  <span className={`text-xs w-4 ${currentTrackIndex === idx ? 'opacity-100 text-ghanaRed' : 'opacity-50'}`}>
+                      {currentTrackIndex === idx && isPlaying ? <i className="fas fa-play animate-pulse"></i> : idx + 1}
+                  </span>
+                  <div className="flex flex-col">
+                      <span className={`font-medium ${currentTrackIndex === idx ? 'text-white' : ''} truncate max-w-[150px] sm:max-w-xs`}>
+                          {song.title}
+                      </span>
+                      {currentTrackIndex === idx && <span className="text-[10px] opacity-70">Now Playing</span>}
+                  </div>
                 </div>
-                {currentTrackIndex === idx && isPlaying && <i className="fas fa-volume-up text-xs animate-pulse"></i>}
+                
+                {/* Active Indicator Bars */}
+                {currentTrackIndex === idx && (
+                    <div className="flex gap-1 h-3 items-end">
+                         <div className="w-0.5 bg-ghanaGold animate-sound-bar" style={{animationDuration: '0.6s'}}></div>
+                         <div className="w-0.5 bg-ghanaGold animate-sound-bar" style={{animationDuration: '0.8s'}}></div>
+                         <div className="w-0.5 bg-ghanaGold animate-sound-bar" style={{animationDuration: '1.0s'}}></div>
+                    </div>
+                )}
               </li>
             ))}
           </ul>
@@ -339,6 +363,13 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ songs }) => {
         }
         .animate-sound-bar {
           animation: soundBar 1.2s ease-in-out infinite;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #333;
+            border-radius: 4px;
         }
       `}</style>
     </div>
