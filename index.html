@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fatao Cantona - Official Website</title>
+    <title>Fatao Cantona - Only Freemen</title>
     <meta name="description" content="Official artist portfolio website for Ghanaian Rapper & Afrobeat Artist Fatao Cantona.">
     
     <!-- Google tag (gtag.js) -->
@@ -17,8 +17,8 @@
       gtag('config', 'G-TQBTGMXDJ0');
     </script>
 
-    <!-- FAVICON: Custom Generated FC Logo (Matches Navbar) -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23050505%22/><text x=%2250%22 y=%2270%22 font-family=%22sans-serif%22 font-weight=%22900%22 font-style=%22italic%22 font-size=%2260%22 text-anchor=%22middle%22 fill=%22%23fcd116%22>FC</text><circle cx=%2280%22 cy=%2230%22 r=%2210%22 fill=%22%23ce1126%22/></svg>">
+    <!-- FAVICON: Simple Music Note Icon (Ghana Gold) -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23fcd116'%3E%3Cpath d='M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z'/%3E%3C/svg%3E">
     
     <!-- Apple Touch Icon (Profile Pic) -->
     <link rel="apple-touch-icon" href="https://yt3.googleusercontent.com/ytc/AIdro_n6czAJLhZEsN6IifapwtZiycxoo43PHRE_tR-3FOjtzg=s900-c-k-c0x00ffffff-no-rj">
@@ -28,7 +28,6 @@
     <meta property="og:url" content="https://fataocantona.com/">
     <meta property="og:title" content="Fatao Cantona - Only Freemen">
     <meta property="og:description" content="Official artist portfolio for Ghanaian Rapper & Afrobeat Artist Fatao Cantona. Stream music, check upcoming shows, and support the movement.">
-    <!-- Using the high-res thumbnail link for social preview -->
     <meta property="og:image" content="https://res.cloudinary.com/dklev9xbf/image/upload/v1764280240/488822490_1215780370053781_1612404062156335069_n_csduyh.jpg">
 
     <!-- Twitter Meta Tags -->
@@ -45,7 +44,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Trade+Winds&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     
-    <!-- React & Babel for In-Browser Compilation -->
+    <!-- React & Babel -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -151,7 +150,6 @@
             tagline: "Ghanaian Rapper & Afrobeat Artist",
             location: "Techiman, Bono East, Ghana",
             image: "https://yt3.googleusercontent.com/ytc/AIdro_n6czAJLhZEsN6IifapwtZiycxoo43PHRE_tR-3FOjtzg=s900-c-k-c0x00ffffff-no-rj",
-            // Using Cloudinary CDN for reliable image loading
             coverImage: "https://res.cloudinary.com/dklev9xbf/image/upload/v1764280240/488822490_1215780370053781_1612404062156335069_n_csduyh.jpg",
             flagImage: "https://www.citypng.com/public/uploads/preview/ghana-round-metal-framed-flag-icon-png-733961694955658eoaq03f93z.png",
             stats: [
@@ -180,13 +178,11 @@
                 title: 'Culture & Heritage Fest',
                 date: 'Sat, 20th Dec 2025 • 10:00 AM',
                 venue: 'Techiman - Astroturf',
-                // Using Cloudinary CDN for reliable image loading
                 flyerUrl: 'https://res.cloudinary.com/dklev9xbf/image/upload/v1764280187/artist_night_ah1oxo.jpg', 
                 ticketLink: '#' 
             }
         ];
 
-        // NEW SONG LIST
         const SONGS = [
             {
                 id: '1',
@@ -213,7 +209,7 @@
                 id: '4',
                 title: 'Problem Go Away',
                 artist: 'Fatao Cantona',
-                url: 'https://res.cloudinary.com/dklev9xbf/video/upload/v1764348043/Fall_On_Me_by_Fatao_Cantona_EF-CEE_-_Listen_on_Audiomack_eicybx.mp4',
+                url: 'https://res.cloudinary.com/dklev9xbf/video/upload/v1764349842/Problem_go_away_by_Fatao_Cantona_EF-CEE_-_Listen_on_Audiomack_ssotae.mp4',
                 coverArt: 'https://res.cloudinary.com/dklev9xbf/image/upload/v1764349835/9039222-81_uecaic.webp'
             },
             {
@@ -310,7 +306,6 @@
         const Header = () => {
             return (
                 <header className="relative max-w-6xl mx-auto mb-8">
-                    {/* Cover Image Section */}
                     <div className="h-48 md:h-80 w-full relative rounded-b-3xl overflow-hidden group border-b border-white/10 shadow-2xl bg-darkerBg">
                         <div className="absolute inset-0 bg-gradient-to-t from-darkBg via-transparent to-transparent z-10 opacity-90"></div>
                         <img 
@@ -328,7 +323,6 @@
                         />
                     </div>
 
-                    {/* Profile Content - Overlapping the Cover */}
                     <div className="relative -mt-20 md:-mt-24 z-20 flex flex-col items-center px-4">
                         <div className="profile-container relative inline-block mb-4">
                             <img 
@@ -369,7 +363,6 @@
             );
         };
 
-        // NEW COMPONENT: AudioPlayer
         const AudioPlayer = ({ songs }) => {
             const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
             const [isPlaying, setIsPlaying] = useState(false);
@@ -405,7 +398,6 @@
                     audioRef.current.pause();
                 } else {
                     audioRef.current.play().catch(e => console.error("Playback error:", e));
-                    // GA4 Tracking: Audio Play
                     if (typeof window.gtag === 'function') {
                         window.gtag('event', 'audio_play', {
                             'event_category': 'Audio',
@@ -420,7 +412,6 @@
             };
 
             const handleDownload = () => {
-                // GA4 Tracking: Audio Download
                 if (typeof window.gtag === 'function') {
                     window.gtag('event', 'audio_download', {
                         'event_category': 'Audio',
@@ -679,7 +670,6 @@
                                             referrerPolicy="no-referrer"
                                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                                             onError={(e) => { 
-                                                // Fallback to a placeholder if drive link fails
                                                 e.currentTarget.src = 'https://placehold.co/800x1200/0a0a0a/ce1126?text=Image+Unavailable'; 
                                             }}
                                         />
@@ -770,7 +760,6 @@
                 e.preventDefault();
                 const { name, email, subject, message } = formData;
                 
-                // Construct the email body
                 const emailBody = `Name: ${name}
 Email: ${email}
 Subject: ${subject}
@@ -778,10 +767,8 @@ Subject: ${subject}
 Message:
 ${message}`;
 
-                // Construct mailto link with encoded parameters
                 const mailtoUrl = `mailto:${CONTACT_INFO.email}?subject=${encodeURIComponent(subject + ' - ' + name)}&body=${encodeURIComponent(emailBody)}`;
                 
-                // Reset Form Data immediately BEFORE the redirect
                 setFormData({
                     name: '',
                     email: '',
@@ -789,7 +776,6 @@ ${message}`;
                     message: ''
                 });
 
-                // Use a short timeout to ensure state updates before opening email client
                 setTimeout(() => {
                     window.location.href = mailtoUrl;
                 }, 100);
@@ -1033,8 +1019,8 @@ ${message}`;
         };
 
         const EmailPopup = ({ isVisible, onClose }) => {
-            const [submissionState, setSubmissionState] = useState('idle'); // idle, submitting, success, error
-            const FORMSPREE_ID = "mgvjpeow"; // Real Formspree ID
+            const [submissionState, setSubmissionState] = useState('idle'); 
+            const FORMSPREE_ID = "mgvjpeow"; 
 
             if (!isVisible) return null;
 
@@ -1044,8 +1030,6 @@ ${message}`;
                 
                 const form = e.currentTarget;
                 const formData = new FormData(form);
-                
-                // Convert formData to a JSON object for safer transmission
                 const data = Object.fromEntries(formData.entries());
 
                 try {
@@ -1062,7 +1046,6 @@ ${message}`;
                         setSubmissionState('success');
                         setTimeout(() => onClose(), 2000);
                     } else {
-                        // Log the actual error from Formspree for debugging
                         const errorData = await response.json();
                         console.error("Formspree Error:", errorData);
                         setSubmissionState('error');
@@ -1127,7 +1110,6 @@ ${message}`;
                                     <p className="text-center text-xs text-red-500">Something went wrong. Please try again.</p>
                                 )}
                                 
-                                {/* Not Now Button */}
                                 <button 
                                     type="button" 
                                     onClick={onClose} 
@@ -1186,7 +1168,6 @@ ${message}`;
                             <div className="animate-fade-in">
                                 <Header />
                                 <div className="h-[5px] bg-gradient-to-r from-ghanaGreen via-ghanaGold to-ghanaRed my-8 rounded-full max-w-7xl mx-auto"></div>
-                                {/* Updated Audio Player with new song data */}
                                 <AudioPlayer songs={SONGS} />
                                 <MusicPlayer />
                                 <Shows shows={UPCOMING_SHOWS} />

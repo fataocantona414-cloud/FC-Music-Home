@@ -69,7 +69,7 @@ export const SONGS: Song[] = [
     id: '4',
     title: 'Problem Go Away',
     artist: 'Fatao Cantona',
-    url: 'https://res.cloudinary.com/dklev9xbf/video/upload/v1764348043/Fall_On_Me_by_Fatao_Cantona_EF-CEE_-_Listen_on_Audiomack_eicybx.mp4',
+    url: 'https://res.cloudinary.com/dklev9xbf/video/upload/v1764349842/Problem_go_away_by_Fatao_Cantona_EF-CEE_-_Listen_on_Audiomack_ssotae.mp4',
     coverArt: 'https://res.cloudinary.com/dklev9xbf/image/upload/v1764349835/9039222-81_uecaic.webp'
   },
   {
