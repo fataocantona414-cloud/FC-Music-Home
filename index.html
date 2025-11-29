@@ -17,8 +17,8 @@
       gtag('config', 'G-TQBTGMXDJ0');
     </script>
 
-    <!-- FAVICON: Simple Music Note Icon (Ghana Gold) -->
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23fcd116'%3E%3Cpath d='M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z'/%3E%3C/svg%3E">
+    <!-- FAVICON: Custom FC Logo -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230a0a0a'/%3E%3Ctext x='50%25' y='50%25' dy='.35em' text-anchor='middle' font-family='sans-serif' font-weight='900' font-style='italic' font-size='32' fill='%23fcd116'%3EFC%3C/text%3E%3Ccircle cx='48' cy='48' r='6' fill='%23ce1126'/%3E%3C/svg%3E">
     
     <!-- Apple Touch Icon (Profile Pic) -->
     <link rel="apple-touch-icon" href="https://yt3.googleusercontent.com/ytc/AIdro_n6czAJLhZEsN6IifapwtZiycxoo43PHRE_tR-3FOjtzg=s900-c-k-c0x00ffffff-no-rj">
@@ -131,9 +131,9 @@
 <script type="importmap">
 {
   "imports": {
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
     "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0"
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
   }
 }
 </script>
@@ -368,6 +368,8 @@
             const [isPlaying, setIsPlaying] = useState(false);
             const [progress, setProgress] = useState(0);
             const [duration, setDuration] = useState(0);
+            const [volume, setVolume] = useState(1);
+            const [isMuted, setIsMuted] = useState(false);
             
             const audioRef = useRef(null);
             const currentSong = songs[currentTrackIndex];
@@ -376,6 +378,7 @@
                 if (audioRef.current) {
                 audioRef.current.pause();
                 audioRef.current.load();
+                audioRef.current.volume = isMuted ? 0 : volume;
                 if (isPlaying) {
                     audioRef.current.play().catch(e => console.error("Playback error:", e));
                 }
@@ -409,6 +412,27 @@
                 }
                 setIsPlaying(!isPlaying);
                 }
+            };
+
+            const toggleMute = () => {
+                if (audioRef.current) {
+                    if (isMuted) {
+                        audioRef.current.volume = volume;
+                        setIsMuted(false);
+                    } else {
+                        audioRef.current.volume = 0;
+                        setIsMuted(true);
+                    }
+                }
+            };
+
+            const handleVolumeChange = (e) => {
+                const val = parseFloat(e.target.value);
+                setVolume(val);
+                if (audioRef.current) {
+                    audioRef.current.volume = val;
+                }
+                setIsMuted(val === 0);
             };
 
             const handleDownload = () => {
@@ -490,20 +514,39 @@
                         <span>{formatTime(duration)}</span>
                         </div>
 
-                        <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <button onClick={handlePrev} className="text-gray-400 hover:text-white transition-colors text-xl">
-                            <i className="fas fa-step-backward"></i>
-                            </button>
-                            <button 
-                            onClick={togglePlay} 
-                            className="w-12 h-12 rounded-full bg-gradient-to-r from-ghanaGreen to-ghanaGold text-black flex items-center justify-center text-xl shadow-lg hover:scale-105 active:scale-95 transition-all"
-                            >
-                            <i className={`fas ${isPlaying ? 'fa-pause' : 'fa-play pl-1'}`}></i>
-                            </button>
-                            <button onClick={handleNext} className="text-gray-400 hover:text-white transition-colors text-xl">
-                            <i className="fas fa-step-forward"></i>
-                            </button>
+                        <div className="flex flex-wrap items-center justify-between gap-4">
+                        <div className="flex items-center gap-6">
+                            <div className="flex items-center gap-4">
+                                <button onClick={handlePrev} className="text-gray-400 hover:text-white transition-colors text-xl">
+                                <i className="fas fa-step-backward"></i>
+                                </button>
+                                <button 
+                                onClick={togglePlay} 
+                                className="w-12 h-12 rounded-full bg-gradient-to-r from-ghanaGreen to-ghanaGold text-black flex items-center justify-center text-xl shadow-lg hover:scale-105 active:scale-95 transition-all"
+                                >
+                                <i className={`fas ${isPlaying ? 'fa-pause' : 'fa-play pl-1'}`}></i>
+                                </button>
+                                <button onClick={handleNext} className="text-gray-400 hover:text-white transition-colors text-xl">
+                                <i className="fas fa-step-forward"></i>
+                                </button>
+                            </div>
+
+                            {/* Volume Slider */}
+                            <div className="hidden sm:flex items-center gap-2 group/vol">
+                                <button onClick={toggleMute} className="text-gray-400 hover:text-white transition-colors w-5 text-center">
+                                    <i className={`fas ${isMuted || volume === 0 ? 'fa-volume-mute' : volume < 0.5 ? 'fa-volume-down' : 'fa-volume-up'}`}></i>
+                                </button>
+                                <input 
+                                    type="range" 
+                                    min="0" 
+                                    max="1" 
+                                    step="0.05"
+                                    value={isMuted ? 0 : volume}
+                                    onChange={handleVolumeChange}
+                                    className="w-16 h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-ghanaGold hover:accent-white transition-all"
+                                    title="Volume"
+                                />
+                            </div>
                         </div>
 
                         <a 
@@ -512,7 +555,7 @@
                             target="_blank" 
                             rel="noreferrer"
                             onClick={handleDownload}
-                            className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full hover:bg-ghanaRed hover:border-transparent hover:text-white transition-all text-sm text-gray-300"
+                            className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full hover:bg-ghanaRed hover:border-transparent hover:text-white transition-all text-sm text-gray-300 ml-auto"
                         >
                             <i className="fas fa-download"></i>
                             <span className="hidden sm:inline">Download</span>
@@ -1213,3 +1256,4 @@ ${message}`;
     </script>
 </body>
 </html>
+    

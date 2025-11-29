@@ -11,6 +11,8 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ songs }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [volume, setVolume] = useState(1);
+  const [isMuted, setIsMuted] = useState(false);
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const currentSong = songs[currentTrackIndex];
@@ -20,6 +22,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ songs }) => {
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.load();
+      audioRef.current.volume = isMuted ? 0 : volume;
       if (isPlaying) {
         audioRef.current.play().catch(e => console.error("Playback error:", e));
       }
@@ -58,6 +61,27 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ songs }) => {
       }
       setIsPlaying(!isPlaying);
     }
+  };
+
+  const toggleMute = () => {
+    if (audioRef.current) {
+      if (isMuted) {
+        audioRef.current.volume = volume;
+        setIsMuted(false);
+      } else {
+        audioRef.current.volume = 0;
+        setIsMuted(true);
+      }
+    }
+  };
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = parseFloat(e.target.value);
+    setVolume(val);
+    if (audioRef.current) {
+      audioRef.current.volume = val;
+    }
+    setIsMuted(val === 0);
   };
 
   const handleDownload = () => {
@@ -145,21 +169,41 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ songs }) => {
               <span>{formatTime(duration)}</span>
             </div>
 
-            {/* Buttons */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <button onClick={handlePrev} className="text-gray-400 hover:text-white transition-colors text-xl">
-                  <i className="fas fa-step-backward"></i>
-                </button>
-                <button 
-                  onClick={togglePlay} 
-                  className="w-12 h-12 rounded-full bg-gradient-to-r from-ghanaGreen to-ghanaGold text-black flex items-center justify-center text-xl shadow-lg hover:scale-105 active:scale-95 transition-all"
-                >
-                  <i className={`fas ${isPlaying ? 'fa-pause' : 'fa-play pl-1'}`}></i>
-                </button>
-                <button onClick={handleNext} className="text-gray-400 hover:text-white transition-colors text-xl">
-                  <i className="fas fa-step-forward"></i>
-                </button>
+            {/* Buttons Row */}
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex items-center gap-6">
+                {/* Transport Controls */}
+                <div className="flex items-center gap-4">
+                    <button onClick={handlePrev} className="text-gray-400 hover:text-white transition-colors text-xl">
+                    <i className="fas fa-step-backward"></i>
+                    </button>
+                    <button 
+                    onClick={togglePlay} 
+                    className="w-12 h-12 rounded-full bg-gradient-to-r from-ghanaGreen to-ghanaGold text-black flex items-center justify-center text-xl shadow-lg hover:scale-105 active:scale-95 transition-all"
+                    >
+                    <i className={`fas ${isPlaying ? 'fa-pause' : 'fa-play pl-1'}`}></i>
+                    </button>
+                    <button onClick={handleNext} className="text-gray-400 hover:text-white transition-colors text-xl">
+                    <i className="fas fa-step-forward"></i>
+                    </button>
+                </div>
+
+                {/* Volume Slider */}
+                <div className="hidden sm:flex items-center gap-2 group/vol">
+                    <button onClick={toggleMute} className="text-gray-400 hover:text-white transition-colors w-5 text-center">
+                        <i className={`fas ${isMuted || volume === 0 ? 'fa-volume-mute' : volume < 0.5 ? 'fa-volume-down' : 'fa-volume-up'}`}></i>
+                    </button>
+                    <input 
+                        type="range" 
+                        min="0" 
+                        max="1" 
+                        step="0.05"
+                        value={isMuted ? 0 : volume}
+                        onChange={handleVolumeChange}
+                        className="w-16 h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-ghanaGold hover:accent-white transition-all"
+                        title="Volume"
+                    />
+                </div>
               </div>
 
               {/* Download Button */}
@@ -169,7 +213,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ songs }) => {
                 target="_blank" 
                 rel="noreferrer"
                 onClick={handleDownload}
-                className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full hover:bg-ghanaRed hover:border-transparent hover:text-white transition-all text-sm text-gray-300"
+                className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full hover:bg-ghanaRed hover:border-transparent hover:text-white transition-all text-sm text-gray-300 ml-auto"
               >
                 <i className="fas fa-download"></i>
                 <span className="hidden sm:inline">Download</span>
