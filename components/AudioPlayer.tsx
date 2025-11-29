@@ -45,8 +45,30 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ songs }) => {
         audioRef.current.pause();
       } else {
         audioRef.current.play().catch(e => console.error("Playback error:", e));
+        
+        // GA4 Tracking: Audio Play
+        if (typeof (window as any).gtag === 'function') {
+            (window as any).gtag('event', 'audio_play', {
+                'event_category': 'Audio',
+                'event_label': currentSong.title,
+                'song_title': currentSong.title,
+                'artist': currentSong.artist
+            });
+        }
       }
       setIsPlaying(!isPlaying);
+    }
+  };
+
+  const handleDownload = () => {
+    // GA4 Tracking: Audio Download
+    if (typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'audio_download', {
+            'event_category': 'Audio',
+            'event_label': currentSong.title,
+            'song_title': currentSong.title,
+            'artist': currentSong.artist
+        });
     }
   };
 
@@ -146,6 +168,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ songs }) => {
                 download 
                 target="_blank" 
                 rel="noreferrer"
+                onClick={handleDownload}
                 className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full hover:bg-ghanaRed hover:border-transparent hover:text-white transition-all text-sm text-gray-300"
               >
                 <i className="fas fa-download"></i>
