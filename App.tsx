@@ -190,7 +190,6 @@ const App: React.FC = () => {
             
             <Shows shows={UPCOMING_SHOWS} />
             <LinkSection title="Stream My Music" links={MUSIC_LINKS} />
-            <LinkSection title="Connect With Me" links={SOCIAL_LINKS} />
           </div>
         );
     }
